@@ -1,0 +1,27 @@
+:root { color-scheme: light dark; --p: #7c3aed; --p2: #a855f7; --bg: #faf7ff; --fg: #1f1630; --muted: #6b5f80; --card: #fff; --line: #e7dcff; }
+@media (prefers-color-scheme: dark) { :root { --bg: #15101f; --fg: #f3ecff; --muted: #b6a8cc; --card: #1f1730; --line: #3a2a57; } }
+* { box-sizing: border-box; }
+body { margin: 0; font: 14px/1.6 system-ui, "Segoe UI", Tahoma, sans-serif; background: var(--bg); color: var(--fg); direction: rtl; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+.brand img { width: 28px; height: 28px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 12px 0; }
+.status { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #9ca3af; flex: none; }
+.dot.on { background: var(--p2); box-shadow: 0 0 0 4px rgba(168,85,247,.25); animation: pulse 1.6s infinite; }
+.dot.err { background: #ef4444; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(168,85,247,.08); } }
+.muted { color: var(--muted); font-size: 12.5px; }
+button { font: inherit; border: 0; border-radius: 10px; padding: 9px 14px; cursor: pointer; }
+button.primary { background: var(--p); color: #fff; }
+button.danger { background: #dc2626; color: #fff; font-weight: 700; width: 100%; padding: 11px; font-size: 15px; }
+button.ghost { background: transparent; color: var(--p2); border: 1px solid var(--line); }
+button:disabled { opacity: .5; cursor: default; }
+code { direction: ltr; unicode-bidi: embed; display: block; font: 12px/1.5 ui-monospace, Consolas, monospace; background: rgba(124,58,237,.08);
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px; word-break: break-all; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tab { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+.tab:first-child { border-top: 0; }
+.tab img { width: 16px; height: 16px; }
+.tab .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+label.switch { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 0; }
+.warn { background: rgba(234,179,8,.12); border: 1px solid rgba(234,179,8,.4); border-radius: 10px; padding: 10px 12px; font-size: 13px; }

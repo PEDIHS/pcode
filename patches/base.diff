@@ -1,0 +1,367 @@
+diff --git a/.cargo/config.toml b/.cargo/config.toml
+index 7d0c4f0..6a91ba2 100644
+--- a/.cargo/config.toml
++++ b/.cargo/config.toml
+@@ -1,4 +1,4 @@
+-# Every Cargo command in this checkout (Ctrl+R, the launcher, agents, tests,
++﻿# Every Cargo command in this checkout (Ctrl+R, the launcher, agents, tests,
+ # rust-analyzer) compiles local unoptimized crates with rustc's parallel
+ # front-end. The wrapper threads only this workspace and path dependencies
+ # such as the sibling Jcode crates, and passes registry/git dependencies,
+@@ -10,7 +10,7 @@
+ # CARGO_BUILD_RUSTC_WRAPPER="" (set by the Windows CI jobs). Set
+ # JCODE_PARALLEL_FRONTEND=0 to keep the wrapper but skip the extra threads.
+ [build]
+-rustc-wrapper = "scripts/rustc-parallel-frontend"
++# rustc-wrapper disabled for the native Windows build
+ 
+ # mold is substantially faster than the system linker for this large GPUI
+ # dependency graph. This setting is Linux-only, so macOS packaging is intact.
+diff --git a/Cargo.lock b/Cargo.lock
+index 143c1d4..ded8445 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -235,7 +235,7 @@ dependencies = [
+  "objc2-foundation 0.3.2",
+  "parking_lot",
+  "percent-encoding",
+- "windows-sys 0.52.0",
++ "windows-sys 0.59.0",
+  "wl-clipboard-rs",
+  "x11rb",
+ ]
+@@ -1673,7 +1673,6 @@ dependencies = [
+ [[package]]
+ name = "collections"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "gpui_util",
+  "indexmap",
+@@ -2186,7 +2185,6 @@ dependencies = [
+ [[package]]
+ name = "derive_refineable"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "proc-macro2",
+  "quote",
+@@ -2490,7 +2488,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
+ dependencies = [
+  "libc",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -3122,7 +3120,6 @@ dependencies = [
+ [[package]]
+ name = "gpui"
+ version = "0.2.2"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "anyhow",
+@@ -3178,6 +3175,7 @@ dependencies = [
+  "thiserror 2.0.20",
+  "tracing",
+  "ttf-parser",
++ "unicode-bidi",
+  "url",
+  "usvg 0.46.0",
+  "util_macros",
+@@ -3201,7 +3199,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_apple"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "block",
+@@ -3225,7 +3222,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_linux"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "accesskit_unix",
+@@ -3271,7 +3267,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_macos"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "accesskit_macos",
+@@ -3318,7 +3313,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_macros"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "heck 0.5.0",
+  "proc-macro2",
+@@ -3329,7 +3323,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_platform"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "console_error_panic_hook",
+  "gpui",
+@@ -3342,7 +3335,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_shared_string"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "schemars",
+  "serde",
+@@ -3352,7 +3344,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_util"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "log",
+@@ -3362,7 +3353,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_web"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "console_error_panic_hook",
+@@ -3390,7 +3380,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_wgpu"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "bytemuck",
+@@ -3416,7 +3405,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_windows"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "accesskit_windows",
+@@ -3703,7 +3691,6 @@ dependencies = [
+ [[package]]
+ name = "http_client"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "async-compression",
+@@ -5333,7 +5320,6 @@ dependencies = [
+ [[package]]
+ name = "media"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "bindgen",
+@@ -6165,7 +6151,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "7d8fae84b431384b68627d0f9b3b1245fcf9f46f6c0e3dc902e9dce64edd1967"
+ dependencies = [
+  "libc",
+- "windows-sys 0.45.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -6283,7 +6269,6 @@ checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
+ [[package]]
+ name = "perf"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "collections",
+  "serde",
+@@ -6824,7 +6809,7 @@ dependencies = [
+  "once_cell",
+  "socket2",
+  "tracing",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -7258,7 +7243,6 @@ dependencies = [
+ [[package]]
+ name = "refineable"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "derive_refineable",
+ ]
+@@ -7540,7 +7524,7 @@ dependencies = [
+  "errno",
+  "libc",
+  "linux-raw-sys",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -7598,7 +7582,7 @@ dependencies = [
+  "security-framework",
+  "security-framework-sys",
+  "webpki-root-certs",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -7682,7 +7666,6 @@ dependencies = [
+ [[package]]
+ name = "scheduler"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "async-task",
+  "backtrace",
+@@ -8262,7 +8245,6 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
+ [[package]]
+ name = "sum_tree"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "heapless",
+  "log",
+@@ -8548,7 +8530,7 @@ dependencies = [
+  "getrandom 0.4.3",
+  "once_cell",
+  "rustix",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -9332,7 +9314,6 @@ checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
+ [[package]]
+ name = "util_macros"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "perf",
+  "quote",
+@@ -9946,7 +9927,7 @@ version = "0.1.11"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
+ dependencies = [
+- "windows-sys 0.48.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -10965,7 +10946,6 @@ dependencies = [
+ [[package]]
+ name = "zlog"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -10994,7 +10974,6 @@ dependencies = [
+ [[package]]
+ name = "ztracing"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "tracing",
+  "tracing-subscriber",
+@@ -11005,7 +10984,6 @@ dependencies = [
+ [[package]]
+ name = "ztracing_macro"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ 
+ [[package]]
+ name = "zune-core"
+diff --git a/Cargo.toml b/Cargo.toml
+index 468f4a4..5c86cf1 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -35,7 +35,7 @@ jcode-desktop-voice = { path = "crates/jcode-desktop-voice" }
+ 
+ [patch.crates-io]
+ # Keep the orb library on the exact GPUI instance used by host and UI.
+-gpui = { git = "https://github.com/1jehuang/gpui", rev = "be875c56343dcbd45127a9805781a9e128057dd7" }
++gpui = { path = "../gpui/crates/gpui" }
+ 
+ [package]
+ name = "jcode-desktop"
+@@ -214,3 +214,25 @@ opt-level = 2
+ opt-level = 2
+ [profile.dev.package.arrayvec]
+ opt-level = 2
++
++# Local GPUI with right-to-left (Persian/Arabic) text support.
++[patch."https://github.com/1jehuang/gpui"]
++collections = { path = "../gpui/crates/collections" }
++derive_refineable = { path = "../gpui/crates/refineable/derive_refineable" }
++gpui = { path = "../gpui/crates/gpui" }
++gpui_macros = { path = "../gpui/crates/gpui_macros" }
++gpui_platform = { path = "../gpui/crates/gpui_platform" }
++gpui_shared_string = { path = "../gpui/crates/gpui_shared_string" }
++gpui_util = { path = "../gpui/crates/gpui_util" }
++gpui_wgpu = { path = "../gpui/crates/gpui_wgpu" }
++gpui_windows = { path = "../gpui/crates/gpui_windows" }
++http_client = { path = "../gpui/crates/http_client" }
++media = { path = "../gpui/crates/media" }
++perf = { path = "../gpui/tooling/perf" }
++refineable = { path = "../gpui/crates/refineable" }
++scheduler = { path = "../gpui/crates/scheduler" }
++sum_tree = { path = "../gpui/crates/sum_tree" }
++util_macros = { path = "../gpui/crates/util_macros" }
++zlog = { path = "../gpui/crates/zlog" }
++ztracing = { path = "../gpui/crates/ztracing" }
++ztracing_macro = { path = "../gpui/crates/ztracing_macro" }
+diff --git a/crates/jcode-desktop-ui/src/markdown.rs b/crates/jcode-desktop-ui/src/markdown.rs
+index c5971e2..9524167 100644
+--- a/crates/jcode-desktop-ui/src/markdown.rs
++++ b/crates/jcode-desktop-ui/src/markdown.rs
+@@ -1021,6 +1021,7 @@ fn styled_line_layout(
+     avatar: bool,
+ ) -> (gpui::AnyElement, gpui::TextLayout) {
+     let inline = inline_spans(source);
++    let rtl = starts_rtl(&inline.plain);
+     let mut highlights = inline.highlights.clone();
+     highlights.extend(fade_tail_highlights(&inline.plain, LEAF_FADE.take()));
+     if let Some(highlight) = selection.read(cx).highlight(&key, inline.plain.len()) {
+@@ -1089,6 +1090,7 @@ fn styled_line_layout(
+     );
+     let element = div()
+         .relative()
++        .when(rtl, |el| el.w_full().text_right())
+         .child(selectable)
+         .when(avatar, |el| {
+             el.child(div().absolute().top_0().left_0().child(assistant_avatar()))
+@@ -1097,6 +1099,20 @@ fn styled_line_layout(
+     (element, layout)
+ }
+ 
++/// Whether a paragraph reads right to left: its first strong letter is from
++/// a right-to-left script such as Persian or Arabic (UAX #9, rules P2/P3).
++pub(crate) fn starts_rtl(text: &str) -> bool {
++    for c in text.chars() {
++        if matches!(c as u32, 0x0590..=0x08FF | 0xFB1D..=0xFDFF | 0xFE70..=0xFEFF) {
++            return true;
++        }
++        if c.is_alphabetic() {
++            return false;
++        }
++    }
++    false
++}
++
+ fn hash(text: &str) -> u64 {
+     use std::hash::{Hash, Hasher};
+     let mut hasher = std::collections::hash_map::DefaultHasher::new();

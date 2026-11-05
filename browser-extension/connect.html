@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>Jcode — اتصال به مرورگر</title>
+  <link rel="stylesheet" href="ui.css">
+  <style> body { padding: 28px; max-width: 760px; margin: 0 auto; } </style>
+</head>
+<body>
+  <div class="brand"><img src="icons/icon-48.png" alt=""> Jcode Browser Agent</div>
+  <div class="card"><div class="status"><span class="dot" id="dot"></span><span id="status">در حال آماده‌سازی…</span></div>
+    <div class="muted" id="detail"></div></div>
+  <div id="approve" hidden>
+    <div class="warn">با اجازه دادن، ایجنت می‌تواند این مرورگر را کنترل کند (از جمله صفحه‌هایی که وارد حسابشان شده‌اید). ایجنت فقط در تب‌های گروه بنفش «Jcode» کار می‌کند.</div>
+    <div class="card">
+      <div class="row"><b>فقط همین تب</b><button class="primary" id="allowHere">اجازه بده</button></div>
+      <div class="muted">یا یکی از تب‌های باز را انتخاب کنید:</div>
+      <div id="tabs"></div>
+    </div>
+    <div class="card"><div class="muted">برای اتصال خودکار بدون این صفحه، این متغیر را در تنظیمات MCP بگذارید:</div><code id="token"></code></div>
+  </div>
+  <script src="connect.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="ui.css">
+  <style> body { width: 340px; padding: 14px; } .card { margin: 10px 0; } </style>
+</head>
+<body>
+  <div class="brand"><img src="icons/icon-48.png" alt=""> Jcode Browser Agent</div>
+  <div class="card">
+    <div class="status"><span class="dot" id="dot"></span><span id="status">…</span></div>
+    <div class="muted" id="detail"></div>
+    <div id="tabs" style="margin-top:6px"></div>
+  </div>
+  <button class="danger" id="stop">■ توقف فوری ایجنت</button>
+  <div class="card" id="pausedBox" hidden>
+    <div class="status"><span class="dot err"></span><span>ایجنت متوقف است؛ اتصال خودکار بسته شده.</span></div>
+    <button class="primary" id="resume" style="margin-top:8px;width:100%">ادامه کار ایجنت</button>
+  </div>
+  <div class="card">
+    <label class="switch"><span>کار در پنجره جداگانه (مزاحم تب‌های شما نشود)</span><input type="checkbox" id="separateWindow"></label>
+    <label class="switch"><span>نمایش حاشیه و نشانگر بنفش</span><input type="checkbox" id="showOverlay"></label>
+    <label class="switch"><span>اگر پنجره ایجنت کاملاً پوشیده شد، هنگام کار جلو بیاید (وگرنه کروم صفحه را متوقف می‌کند)</span><input type="checkbox" id="raiseWhenHidden"></label>
+  </div>
+  <div class="muted">نسخه <span id="ver"></span> · بر پایه Playwright Extension (Apache-2.0)</div>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

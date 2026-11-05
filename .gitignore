@@ -1,0 +1,6 @@
+target/
+node_modules/
+*.log
+browser-extension/config.json
+*.pem
+.env

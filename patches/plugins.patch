@@ -1,0 +1,2258 @@
+diff --git a/.cargo/config.toml b/.cargo/config.toml
+index 7d0c4f0..6a91ba2 100644
+--- a/.cargo/config.toml
++++ b/.cargo/config.toml
+@@ -1,4 +1,4 @@
+-# Every Cargo command in this checkout (Ctrl+R, the launcher, agents, tests,
++﻿# Every Cargo command in this checkout (Ctrl+R, the launcher, agents, tests,
+ # rust-analyzer) compiles local unoptimized crates with rustc's parallel
+ # front-end. The wrapper threads only this workspace and path dependencies
+ # such as the sibling Jcode crates, and passes registry/git dependencies,
+@@ -10,7 +10,7 @@
+ # CARGO_BUILD_RUSTC_WRAPPER="" (set by the Windows CI jobs). Set
+ # JCODE_PARALLEL_FRONTEND=0 to keep the wrapper but skip the extra threads.
+ [build]
+-rustc-wrapper = "scripts/rustc-parallel-frontend"
++# rustc-wrapper disabled for the native Windows build
+ 
+ # mold is substantially faster than the system linker for this large GPUI
+ # dependency graph. This setting is Linux-only, so macOS packaging is intact.
+diff --git a/Cargo.lock b/Cargo.lock
+index 143c1d4..4bef030 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -235,7 +235,7 @@ dependencies = [
+  "objc2-foundation 0.3.2",
+  "parking_lot",
+  "percent-encoding",
+- "windows-sys 0.52.0",
++ "windows-sys 0.59.0",
+  "wl-clipboard-rs",
+  "x11rb",
+ ]
+@@ -1673,7 +1673,6 @@ dependencies = [
+ [[package]]
+ name = "collections"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "gpui_util",
+  "indexmap",
+@@ -2186,7 +2185,6 @@ dependencies = [
+ [[package]]
+ name = "derive_refineable"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "proc-macro2",
+  "quote",
+@@ -2490,7 +2488,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
+ dependencies = [
+  "libc",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -3122,7 +3120,6 @@ dependencies = [
+ [[package]]
+ name = "gpui"
+ version = "0.2.2"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "anyhow",
+@@ -3178,6 +3175,7 @@ dependencies = [
+  "thiserror 2.0.20",
+  "tracing",
+  "ttf-parser",
++ "unicode-bidi",
+  "url",
+  "usvg 0.46.0",
+  "util_macros",
+@@ -3201,7 +3199,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_apple"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "block",
+@@ -3225,7 +3222,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_linux"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "accesskit_unix",
+@@ -3271,7 +3267,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_macos"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "accesskit_macos",
+@@ -3318,7 +3313,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_macros"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "heck 0.5.0",
+  "proc-macro2",
+@@ -3329,7 +3323,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_platform"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "console_error_panic_hook",
+  "gpui",
+@@ -3342,7 +3335,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_shared_string"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "schemars",
+  "serde",
+@@ -3352,7 +3344,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_util"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "log",
+@@ -3362,7 +3353,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_web"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "console_error_panic_hook",
+@@ -3390,7 +3380,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_wgpu"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "bytemuck",
+@@ -3416,7 +3405,6 @@ dependencies = [
+ [[package]]
+ name = "gpui_windows"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "accesskit",
+  "accesskit_windows",
+@@ -3703,7 +3691,6 @@ dependencies = [
+ [[package]]
+ name = "http_client"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "async-compression",
+@@ -4303,6 +4290,7 @@ dependencies = [
+  "serde",
+  "serde_json",
+  "tempfile",
++ "toml 0.8.23",
+ ]
+ 
+ [[package]]
+@@ -5333,7 +5321,6 @@ dependencies = [
+ [[package]]
+ name = "media"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "bindgen",
+@@ -6165,7 +6152,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "7d8fae84b431384b68627d0f9b3b1245fcf9f46f6c0e3dc902e9dce64edd1967"
+ dependencies = [
+  "libc",
+- "windows-sys 0.45.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -6283,7 +6270,6 @@ checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
+ [[package]]
+ name = "perf"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "collections",
+  "serde",
+@@ -6824,7 +6810,7 @@ dependencies = [
+  "once_cell",
+  "socket2",
+  "tracing",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -7258,7 +7244,6 @@ dependencies = [
+ [[package]]
+ name = "refineable"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "derive_refineable",
+ ]
+@@ -7540,7 +7525,7 @@ dependencies = [
+  "errno",
+  "libc",
+  "linux-raw-sys",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -7598,7 +7583,7 @@ dependencies = [
+  "security-framework",
+  "security-framework-sys",
+  "webpki-root-certs",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -7682,7 +7667,6 @@ dependencies = [
+ [[package]]
+ name = "scheduler"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "async-task",
+  "backtrace",
+@@ -8262,7 +8246,6 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
+ [[package]]
+ name = "sum_tree"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "heapless",
+  "log",
+@@ -8548,7 +8531,7 @@ dependencies = [
+  "getrandom 0.4.3",
+  "once_cell",
+  "rustix",
+- "windows-sys 0.52.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -9332,7 +9315,6 @@ checksum = "b6c140620e7ffbb22c2dee59cafe6084a59b5ffc27a8859a5f0d494b5d52b6be"
+ [[package]]
+ name = "util_macros"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "perf",
+  "quote",
+@@ -9946,7 +9928,7 @@ version = "0.1.11"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
+ dependencies = [
+- "windows-sys 0.48.0",
++ "windows-sys 0.61.2",
+ ]
+ 
+ [[package]]
+@@ -10965,7 +10947,6 @@ dependencies = [
+ [[package]]
+ name = "zlog"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "anyhow",
+  "chrono",
+@@ -10994,7 +10975,6 @@ dependencies = [
+ [[package]]
+ name = "ztracing"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ dependencies = [
+  "tracing",
+  "tracing-subscriber",
+@@ -11005,7 +10985,6 @@ dependencies = [
+ [[package]]
+ name = "ztracing_macro"
+ version = "0.1.0"
+-source = "git+https://github.com/1jehuang/gpui?rev=be875c56343dcbd45127a9805781a9e128057dd7#be875c56343dcbd45127a9805781a9e128057dd7"
+ 
+ [[package]]
+ name = "zune-core"
+diff --git a/Cargo.toml b/Cargo.toml
+index 468f4a4..5c86cf1 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -35,7 +35,7 @@ jcode-desktop-voice = { path = "crates/jcode-desktop-voice" }
+ 
+ [patch.crates-io]
+ # Keep the orb library on the exact GPUI instance used by host and UI.
+-gpui = { git = "https://github.com/1jehuang/gpui", rev = "be875c56343dcbd45127a9805781a9e128057dd7" }
++gpui = { path = "../gpui/crates/gpui" }
+ 
+ [package]
+ name = "jcode-desktop"
+@@ -214,3 +214,25 @@ opt-level = 2
+ opt-level = 2
+ [profile.dev.package.arrayvec]
+ opt-level = 2
++
++# Local GPUI with right-to-left (Persian/Arabic) text support.
++[patch."https://github.com/1jehuang/gpui"]
++collections = { path = "../gpui/crates/collections" }
++derive_refineable = { path = "../gpui/crates/refineable/derive_refineable" }
++gpui = { path = "../gpui/crates/gpui" }
++gpui_macros = { path = "../gpui/crates/gpui_macros" }
++gpui_platform = { path = "../gpui/crates/gpui_platform" }
++gpui_shared_string = { path = "../gpui/crates/gpui_shared_string" }
++gpui_util = { path = "../gpui/crates/gpui_util" }
++gpui_wgpu = { path = "../gpui/crates/gpui_wgpu" }
++gpui_windows = { path = "../gpui/crates/gpui_windows" }
++http_client = { path = "../gpui/crates/http_client" }
++media = { path = "../gpui/crates/media" }
++perf = { path = "../gpui/tooling/perf" }
++refineable = { path = "../gpui/crates/refineable" }
++scheduler = { path = "../gpui/crates/scheduler" }
++sum_tree = { path = "../gpui/crates/sum_tree" }
++util_macros = { path = "../gpui/crates/util_macros" }
++zlog = { path = "../gpui/crates/zlog" }
++ztracing = { path = "../gpui/crates/ztracing" }
++ztracing_macro = { path = "../gpui/crates/ztracing_macro" }
+diff --git a/crates/jcode-desktop-model/Cargo.toml b/crates/jcode-desktop-model/Cargo.toml
+index 11b9e77..dc0c5fa 100644
+--- a/crates/jcode-desktop-model/Cargo.toml
++++ b/crates/jcode-desktop-model/Cargo.toml
+@@ -19,6 +19,7 @@ reqwest = { version = "0.12", default-features = false, features = ["blocking",
+ serde = { version = "1", features = ["derive"] }
+ serde_json = "1.0.151"
+ tempfile = "3"
++toml = "0.8"
+ 
+ [dev-dependencies]
+ # PDF tests decode the rendered PNG. Same features as jcode-desktop-ui.
+diff --git a/crates/jcode-desktop-model/src/lib.rs b/crates/jcode-desktop-model/src/lib.rs
+index b21b232..db90902 100644
+--- a/crates/jcode-desktop-model/src/lib.rs
++++ b/crates/jcode-desktop-model/src/lib.rs
+@@ -11,4 +11,5 @@ pub mod friendly_error;
+ pub mod learning;
+ pub mod pdf_render;
+ pub mod platform_dirs;
++pub mod plugins;
+ pub mod todoist;
+diff --git a/crates/jcode-desktop-model/src/plugins.rs b/crates/jcode-desktop-model/src/plugins.rs
+new file mode 100644
+index 0000000..8253fbb
+--- /dev/null
++++ b/crates/jcode-desktop-model/src/plugins.rs
+@@ -0,0 +1,963 @@
++//! Claude Code and Codex plugins seen from Jcode.
++//!
++//! Lists what each tool has installed, reads the marketplaces each tool knows
++//! about, and installs a plugin into Jcode: its skills go to
++//! `~/.jcode/skills/` and its MCP servers to `~/.jcode/mcp.json`, the two
++//! places the Jcode runtime already reads. Every install is recorded in
++//! `~/.jcode/plugins/installed.json` so uninstall removes exactly what it
++//! added and never a skill or server the user made by hand.
++
++use anyhow::{Context, Result, anyhow, bail};
++use serde::{Deserialize, Serialize};
++use serde_json::{Map, Value};
++use std::fs;
++use std::path::{Path, PathBuf};
++use std::process::Command;
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
++pub enum Ecosystem {
++    Claude,
++    Codex,
++    Jcode,
++}
++
++impl Ecosystem {
++    pub fn label(self) -> &'static str {
++        match self {
++            Self::Claude => "Claude Code",
++            Self::Codex => "Codex",
++            Self::Jcode => "Jcode",
++        }
++    }
++}
++
++/// Where the home folders live. Tests point these at temporary directories.
++#[derive(Clone, Debug)]
++pub struct Roots {
++    pub home: PathBuf,
++    pub jcode_home: PathBuf,
++}
++
++impl Roots {
++    pub fn detect() -> Option<Self> {
++        Some(Self {
++            home: crate::platform_dirs::home_dir()?,
++            jcode_home: crate::platform_dirs::jcode_home()?,
++        })
++    }
++
++    fn claude_plugins(&self) -> PathBuf {
++        self.home.join(".claude").join("plugins")
++    }
++
++    fn codex_home(&self) -> PathBuf {
++        self.home.join(".codex")
++    }
++
++    fn plugins_dir(&self) -> PathBuf {
++        self.jcode_home.join("plugins")
++    }
++
++    fn record_path(&self) -> PathBuf {
++        self.plugins_dir().join("installed.json")
++    }
++
++    fn mcp_path(&self) -> PathBuf {
++        self.jcode_home.join("mcp.json")
++    }
++
++    fn skills_dir(&self) -> PathBuf {
++        self.jcode_home.join("skills")
++    }
++}
++
++/// What a plugin directory provides.
++#[derive(Clone, Debug, Default, PartialEq, Eq)]
++pub struct Contents {
++    pub name: Option<String>,
++    /// `interface.displayName` from a Codex manifest.
++    pub display_name: Option<String>,
++    pub description: Option<String>,
++    pub version: Option<String>,
++    pub skills: Vec<String>,
++    pub mcp_servers: Vec<String>,
++    pub commands: usize,
++    pub agents: usize,
++    /// Hosted connectors (Codex `.app.json`). They only work inside Codex.
++    pub apps: usize,
++}
++
++/// A plugin installed in Claude Code, Codex or Jcode.
++#[derive(Clone, Debug)]
++pub struct InstalledPlugin {
++    pub ecosystem: Ecosystem,
++    pub marketplace: String,
++    pub name: String,
++    pub enabled: bool,
++    pub path: PathBuf,
++    pub contents: Contents,
++    /// Also installed into Jcode (always true for `Ecosystem::Jcode`).
++    pub in_jcode: bool,
++}
++
++impl InstalledPlugin {
++    pub fn key(&self) -> String {
++        format!("{}@{}", self.name, self.marketplace)
++    }
++
++    pub fn title(&self) -> &str {
++        self.contents.display_name.as_deref().unwrap_or(&self.name)
++    }
++}
++
++#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
++pub enum Source {
++    Local(PathBuf),
++    Git {
++        url: String,
++        subdir: Option<String>,
++        git_ref: Option<String>,
++    },
++}
++
++/// A plugin a marketplace offers.
++#[derive(Clone, Debug)]
++pub struct MarketplacePlugin {
++    pub ecosystem: Ecosystem,
++    pub marketplace: String,
++    pub name: String,
++    pub description: String,
++    pub category: Option<String>,
++    pub source: Source,
++    pub in_jcode: bool,
++}
++
++impl MarketplacePlugin {
++    pub fn key(&self) -> String {
++        format!("{}@{}", self.name, self.marketplace)
++    }
++}
++
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum InstallMode {
++    /// Skills and MCP servers.
++    Full,
++    SkillsOnly,
++}
++
++/// One entry of `~/.jcode/plugins/installed.json`.
++#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
++pub struct Record {
++    pub key: String,
++    pub ecosystem: Ecosystem,
++    pub marketplace: String,
++    pub name: String,
++    pub path: PathBuf,
++    pub skills: Vec<String>,
++    pub mcp_servers: Vec<String>,
++}
++
++#[derive(Clone, Debug, Default, PartialEq, Eq)]
++pub struct InstallReport {
++    pub skills: Vec<String>,
++    pub mcp_servers: Vec<String>,
++    /// Skills or servers left alone because the user already has one by
++    /// that name.
++    pub skipped: Vec<String>,
++    /// Parts Jcode cannot use (Codex hosted apps, slash commands, agents).
++    pub unsupported: Vec<String>,
++}
++
++// ---------------------------------------------------------------------------
++// Reading plugin folders
++
++fn read_json(path: &Path) -> Option<Value> {
++    serde_json::from_str(&fs::read_to_string(path).ok()?).ok()
++}
++
++fn manifest(dir: &Path) -> Option<Value> {
++    [".claude-plugin/plugin.json", ".codex-plugin/plugin.json"]
++        .iter()
++        .find_map(|rel| read_json(&dir.join(rel)))
++}
++
++fn str_field(value: &Value, key: &str) -> Option<String> {
++    value.get(key)?.as_str().map(str::to_owned)
++}
++
++/// The manifest may name its skills folder or MCP file; otherwise the usual
++/// place is used.
++fn manifest_path(dir: &Path, manifest: Option<&Value>, key: &str, default: &str) -> PathBuf {
++    let rel = manifest
++        .and_then(|m| m.get(key))
++        .and_then(Value::as_str)
++        .unwrap_or(default);
++    dir.join(rel.trim_start_matches("./"))
++}
++
++fn skill_dirs(dir: &Path, manifest: Option<&Value>) -> Vec<(String, PathBuf)> {
++    let root = manifest_path(dir, manifest, "skills", "skills");
++    let mut skills: Vec<_> = fs::read_dir(&root)
++        .into_iter()
++        .flatten()
++        .flatten()
++        .map(|entry| entry.path())
++        .filter(|path| path.join("SKILL.md").is_file())
++        .filter_map(|path| Some((path.file_name()?.to_string_lossy().into_owned(), path)))
++        .collect();
++    skills.sort();
++    skills
++}
++
++/// MCP servers from `.mcp.json`, in either `{"mcpServers": {..}}` or bare
++/// `{name: config}` form, or inline in the manifest.
++fn mcp_servers(dir: &Path, manifest: Option<&Value>) -> Map<String, Value> {
++    if let Some(Value::Object(inline)) = manifest.and_then(|m| m.get("mcpServers")) {
++        return inline.clone();
++    }
++    let file = manifest_path(dir, manifest, "mcpServers", ".mcp.json");
++    match read_json(&file) {
++        Some(Value::Object(mut map)) => match map.remove("mcpServers") {
++            Some(Value::Object(servers)) => servers,
++            _ => map.into_iter().filter(|(_, v)| v.is_object()).collect(),
++        },
++        _ => Map::new(),
++    }
++}
++
++fn count_files(dir: &Path, extension: &str) -> usize {
++    fs::read_dir(dir)
++        .into_iter()
++        .flatten()
++        .flatten()
++        .filter(|e| e.path().extension().is_some_and(|ext| ext == extension))
++        .count()
++}
++
++pub fn scan(dir: &Path) -> Contents {
++    let manifest = manifest(dir);
++    let m = manifest.as_ref();
++    let apps = read_json(&dir.join(".app.json"))
++        .and_then(|v| v.get("apps").and_then(Value::as_object).map(Map::len))
++        .unwrap_or(0);
++    Contents {
++        name: m.and_then(|m| str_field(m, "name")),
++        display_name: m
++            .and_then(|m| m.get("interface"))
++            .and_then(|i| str_field(i, "displayName")),
++        description: m.and_then(|m| str_field(m, "description")),
++        version: m.and_then(|m| str_field(m, "version")),
++        skills: skill_dirs(dir, m).into_iter().map(|(name, _)| name).collect(),
++        mcp_servers: mcp_servers(dir, m).keys().cloned().collect(),
++        commands: count_files(&dir.join("commands"), "md"),
++        agents: count_files(&dir.join("agents"), "md"),
++        apps,
++    }
++}
++
++// ---------------------------------------------------------------------------
++// Installed plugins
++
++fn split_key(key: &str) -> (String, String) {
++    match key.rsplit_once('@') {
++        Some((name, marketplace)) => (name.to_owned(), marketplace.to_owned()),
++        None => (key.to_owned(), String::new()),
++    }
++}
++
++fn claude_installed(roots: &Roots) -> Vec<InstalledPlugin> {
++    let Some(Value::Object(file)) = read_json(&roots.claude_plugins().join("installed_plugins.json"))
++    else {
++        return Vec::new();
++    };
++    let Some(Value::Object(plugins)) = file.get("plugins") else {
++        return Vec::new();
++    };
++    plugins
++        .iter()
++        .filter_map(|(key, installs)| {
++            let path = installs
++                .as_array()?
++                .iter()
++                .rev()
++                .find_map(|install| install.get("installPath")?.as_str().map(PathBuf::from))?;
++            let (name, marketplace) = split_key(key);
++            Some(InstalledPlugin {
++                ecosystem: Ecosystem::Claude,
++                contents: scan(&path),
++                marketplace,
++                name,
++                enabled: true,
++                path,
++                in_jcode: false,
++            })
++        })
++        .collect()
++}
++
++fn codex_config(roots: &Roots) -> toml::Table {
++    fs::read_to_string(roots.codex_home().join("config.toml"))
++        .ok()
++        .and_then(|text| text.parse().ok())
++        .unwrap_or_default()
++}
++
++/// Newest version folder of a Codex plugin in its cache.
++fn codex_plugin_dir(roots: &Roots, marketplace: &str, name: &str) -> Option<PathBuf> {
++    let base = roots.codex_home().join("plugins/cache").join(marketplace).join(name);
++    fs::read_dir(base)
++        .ok()?
++        .flatten()
++        .filter(|e| e.path().join(".codex-plugin/plugin.json").is_file())
++        .max_by_key(|e| e.metadata().and_then(|m| m.modified()).ok())
++        .map(|e| e.path())
++}
++
++fn codex_installed(roots: &Roots) -> Vec<InstalledPlugin> {
++    let config = codex_config(roots);
++    let mut seen = std::collections::BTreeSet::new();
++    let mut plugins = Vec::new();
++    if let Some(toml::Value::Table(table)) = config.get("plugins") {
++        for (key, value) in table {
++            let (name, marketplace) = split_key(key);
++            let enabled = value
++                .get("enabled")
++                .and_then(toml::Value::as_bool)
++                .unwrap_or(true);
++            if let Some(path) = codex_plugin_dir(roots, &marketplace, &name) {
++                seen.insert((marketplace.clone(), name.clone()));
++                plugins.push(InstalledPlugin {
++                    ecosystem: Ecosystem::Codex,
++                    contents: scan(&path),
++                    marketplace,
++                    name,
++                    enabled,
++                    path,
++                    in_jcode: false,
++                });
++            }
++        }
++    }
++    // Remote (curated) plugins live only in the cache, not in config.toml.
++    let cache = roots.codex_home().join("plugins/cache");
++    for marketplace in fs::read_dir(&cache).into_iter().flatten().flatten() {
++        let marketplace_name = marketplace.file_name().to_string_lossy().into_owned();
++        for plugin in fs::read_dir(marketplace.path()).into_iter().flatten().flatten() {
++            let name = plugin.file_name().to_string_lossy().into_owned();
++            if seen.contains(&(marketplace_name.clone(), name.clone())) {
++                continue;
++            }
++            if let Some(path) = codex_plugin_dir(roots, &marketplace_name, &name) {
++                let contents = scan(&path);
++                plugins.push(InstalledPlugin {
++                    ecosystem: Ecosystem::Codex,
++                    name: contents.name.clone().unwrap_or(name),
++                    contents,
++                    marketplace: marketplace_name.clone(),
++                    enabled: true,
++                    path,
++                    in_jcode: false,
++                });
++            }
++        }
++    }
++    plugins
++}
++
++pub fn records(roots: &Roots) -> Vec<Record> {
++    read_json(&roots.record_path())
++        .and_then(|v| serde_json::from_value(v).ok())
++        .unwrap_or_default()
++}
++
++fn save_records(roots: &Roots, records: &[Record]) -> Result<()> {
++    fs::create_dir_all(roots.plugins_dir())?;
++    fs::write(roots.record_path(), serde_json::to_string_pretty(records)?)?;
++    Ok(())
++}
++
++/// Everything installed, Claude Code first, then Codex, then plugins that
++/// were installed into Jcode from a marketplace.
++pub fn installed(roots: &Roots) -> Vec<InstalledPlugin> {
++    let records = records(roots);
++    let in_jcode = |key: &str| records.iter().any(|r| r.key == key);
++    let mut all: Vec<InstalledPlugin> = claude_installed(roots)
++        .into_iter()
++        .chain(codex_installed(roots))
++        .map(|mut p| {
++            p.in_jcode = in_jcode(&p.key());
++            p
++        })
++        .collect();
++    all.sort_by(|a, b| (a.ecosystem as u8, &a.name).cmp(&(b.ecosystem as u8, &b.name)));
++    for record in &records {
++        if all.iter().any(|p| p.key() == record.key) {
++            continue;
++        }
++        all.push(InstalledPlugin {
++            ecosystem: Ecosystem::Jcode,
++            marketplace: record.marketplace.clone(),
++            name: record.name.clone(),
++            enabled: true,
++            contents: scan(&record.path),
++            path: record.path.clone(),
++            in_jcode: true,
++        });
++    }
++    all
++}
++
++// ---------------------------------------------------------------------------
++// Marketplaces
++
++fn parse_source(root: &Path, source: &Value) -> Option<Source> {
++    let local = |rel: &str| Source::Local(root.join(rel.trim_start_matches("./")));
++    match source {
++        Value::String(rel) => Some(local(rel)),
++        Value::Object(obj) => {
++            let field = |k: &str| obj.get(k).and_then(Value::as_str).map(str::to_owned);
++            match field("source")?.as_str() {
++                "local" => Some(local(&field("path")?)),
++                "github" => Some(Source::Git {
++                    url: format!("https://github.com/{}.git", field("repo")?),
++                    subdir: field("path"),
++                    git_ref: field("ref"),
++                }),
++                "url" | "git" | "git-subdir" => Some(Source::Git {
++                    url: field("url")?,
++                    subdir: field("path"),
++                    git_ref: field("ref"),
++                }),
++                _ => None,
++            }
++        }
++        _ => None,
++    }
++}
++
++/// Plugins listed by a marketplace checked out at `root`, in Claude Code
++/// (`.claude-plugin/marketplace.json`) or Codex (`.agents/plugins/marketplace.json`) form.
++pub fn read_marketplace(root: &Path, ecosystem: Ecosystem) -> Vec<MarketplacePlugin> {
++    let Some(file) = [".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json"]
++        .iter()
++        .find_map(|rel| read_json(&root.join(rel)))
++    else {
++        return Vec::new();
++    };
++    let marketplace = str_field(&file, "name")
++        .or_else(|| Some(root.file_name()?.to_string_lossy().into_owned()))
++        .unwrap_or_default();
++    let Some(list) = file.get("plugins").and_then(Value::as_array) else {
++        return Vec::new();
++    };
++    list.iter()
++        .filter_map(|plugin| {
++            let name = str_field(plugin, "name")?;
++            let source = parse_source(root, plugin.get("source")?)?;
++            let description = str_field(plugin, "description")
++                .or_else(|| match &source {
++                    Source::Local(dir) => scan(dir).description,
++                    Source::Git { .. } => None,
++                })
++                .unwrap_or_default();
++            Some(MarketplacePlugin {
++                ecosystem,
++                marketplace: marketplace.clone(),
++                name,
++                description,
++                category: str_field(plugin, "category"),
++                source,
++                in_jcode: false,
++            })
++        })
++        .collect()
++}
++
++/// Folders of every marketplace Claude Code, Codex or Jcode knows about.
++fn marketplace_roots(roots: &Roots) -> Vec<(Ecosystem, PathBuf)> {
++    let mut found = Vec::new();
++    if let Some(Value::Object(known)) =
++        read_json(&roots.claude_plugins().join("known_marketplaces.json"))
++    {
++        for entry in known.values() {
++            if let Some(dir) = entry.get("installLocation").and_then(Value::as_str) {
++                found.push((Ecosystem::Claude, PathBuf::from(dir)));
++            }
++        }
++    }
++    if let Some(toml::Value::Table(table)) = codex_config(roots).get("marketplaces") {
++        for entry in table.values() {
++            if let Some(dir) = entry.get("source").and_then(toml::Value::as_str) {
++                // Codex writes verbatim `\\?\` paths.
++                found.push((Ecosystem::Codex, PathBuf::from(dir.trim_start_matches(r"\\?\"))));
++            }
++        }
++    }
++    for entry in fs::read_dir(roots.jcode_home.join("marketplaces")).into_iter().flatten().flatten() {
++        let dir = entry.path();
++        let ecosystem = if dir.join(".agents/plugins/marketplace.json").is_file() {
++            Ecosystem::Codex
++        } else {
++            Ecosystem::Claude
++        };
++        found.push((ecosystem, dir));
++    }
++    found
++}
++
++pub fn marketplace(roots: &Roots) -> Vec<MarketplacePlugin> {
++    let records = records(roots);
++    let mut plugins: Vec<_> = marketplace_roots(roots)
++        .into_iter()
++        .flat_map(|(ecosystem, dir)| read_marketplace(&dir, ecosystem))
++        .map(|mut p| {
++            p.in_jcode = records.iter().any(|r| r.key == p.key());
++            p
++        })
++        .collect();
++    plugins.sort_by(|a, b| a.name.cmp(&b.name).then(a.marketplace.cmp(&b.marketplace)));
++    plugins
++}
++
++/// Clone a marketplace (for example `https://github.com/openai/plugins`)
++/// into `~/.jcode/marketplaces/` so its plugins show up in [`marketplace`].
++pub fn add_marketplace(roots: &Roots, url: &str) -> Result<PathBuf> {
++    let name = url
++        .trim_end_matches('/')
++        .trim_end_matches(".git")
++        .rsplit('/')
++        .take(2)
++        .collect::<Vec<_>>()
++        .into_iter()
++        .rev()
++        .collect::<Vec<_>>()
++        .join("-");
++    if name.is_empty() || name.contains("..") {
++        bail!("not a repository URL: {url}");
++    }
++    let dest = roots.jcode_home.join("marketplaces").join(&name);
++    if dest.exists() {
++        git(&["-C", &dest.to_string_lossy(), "pull", "--ff-only", "--quiet"])?;
++    } else {
++        fs::create_dir_all(dest.parent().unwrap())?;
++        git(&["clone", "--depth", "1", "--quiet", url, &dest.to_string_lossy()])?;
++    }
++    if read_marketplace(&dest, Ecosystem::Claude).is_empty() {
++        bail!("{url} has no .claude-plugin/marketplace.json or .agents/plugins/marketplace.json");
++    }
++    Ok(dest)
++}
++
++// ---------------------------------------------------------------------------
++// Installing into Jcode
++
++fn git(args: &[&str]) -> Result<()> {
++    let output = Command::new("git")
++        .args(args)
++        .output()
++        .context("git is not installed")?;
++    if !output.status.success() {
++        bail!(
++            "git {} failed: {}",
++            args.first().unwrap_or(&""),
++            String::from_utf8_lossy(&output.stderr).trim()
++        );
++    }
++    Ok(())
++}
++
++fn copy_dir(from: &Path, to: &Path) -> Result<()> {
++    fs::create_dir_all(to)?;
++    for entry in fs::read_dir(from)? {
++        let entry = entry?;
++        let name = entry.file_name();
++        if name == ".git" {
++            continue;
++        }
++        let target = to.join(&name);
++        if entry.file_type()?.is_dir() {
++            copy_dir(&entry.path(), &target)?;
++        } else {
++            fs::copy(entry.path(), target)?;
++        }
++    }
++    Ok(())
++}
++
++fn safe_name(name: &str) -> Result<&str> {
++    if name.is_empty() || name.contains(['/', '\\']) || name.contains("..") {
++        bail!("unsafe plugin name: {name}");
++    }
++    Ok(name)
++}
++
++/// Bring the plugin's files to `dest`.
++fn fetch(source: &Source, dest: &Path) -> Result<()> {
++    if dest.exists() {
++        fs::remove_dir_all(dest)?;
++    }
++    match source {
++        Source::Local(dir) => copy_dir(dir, dest),
++        Source::Git { url, subdir, git_ref } => {
++            let checkout = tempfile::tempdir()?;
++            let repo = checkout.path().join("repo");
++            let repo_arg = repo.to_string_lossy().into_owned();
++            let mut args = vec!["clone", "--depth", "1", "--quiet"];
++            if let Some(r) = git_ref.as_deref() {
++                args.extend(["--branch", r]);
++            }
++            args.extend([url.as_str(), repo_arg.as_str()]);
++            git(&args)?;
++            let from = match subdir {
++                Some(sub) => repo.join(sub.trim_start_matches("./")),
++                None => repo.clone(),
++            };
++            if !from.starts_with(&repo) || !from.is_dir() {
++                bail!("{url} has no folder {}", subdir.as_deref().unwrap_or(""));
++            }
++            copy_dir(&from, dest)
++        }
++    }
++}
++
++fn load_mcp_config(roots: &Roots) -> Result<Map<String, Value>> {
++    match fs::read_to_string(roots.mcp_path()) {
++        Ok(text) => match serde_json::from_str(&text)? {
++            Value::Object(map) => Ok(map),
++            _ => Err(anyhow!("{} is not a JSON object", roots.mcp_path().display())),
++        },
++        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(Map::new()),
++        Err(e) => Err(e.into()),
++    }
++}
++
++fn save_mcp_config(roots: &Roots, config: &Map<String, Value>) -> Result<()> {
++    fs::create_dir_all(&roots.jcode_home)?;
++    fs::write(roots.mcp_path(), serde_json::to_string_pretty(config)?)?;
++    Ok(())
++}
++
++/// Replace plugin-root placeholders so stdio servers find their own files.
++fn expand_root(value: &mut Value, root: &str) {
++    match value {
++        Value::String(s) => {
++            for var in ["${CLAUDE_PLUGIN_ROOT}", "${PLUGIN_ROOT}", "${CODEX_PLUGIN_ROOT}"] {
++                *s = s.replace(var, root);
++            }
++        }
++        Value::Array(items) => items.iter_mut().for_each(|v| expand_root(v, root)),
++        Value::Object(map) => map.values_mut().for_each(|v| expand_root(v, root)),
++        _ => {}
++    }
++}
++
++/// Install a plugin into Jcode from its marketplace `source`. Reinstalling
++/// replaces what the previous install added.
++pub fn install(
++    roots: &Roots,
++    ecosystem: Ecosystem,
++    marketplace: &str,
++    name: &str,
++    source: &Source,
++    mode: InstallMode,
++) -> Result<InstallReport> {
++    let key = format!("{name}@{marketplace}");
++    if records(roots).iter().any(|r| r.key == key) {
++        uninstall(roots, &key)?;
++    }
++    let dest = roots
++        .plugins_dir()
++        .join(safe_name(marketplace).unwrap_or("local"))
++        .join(safe_name(name)?);
++    fetch(source, &dest).with_context(|| format!("fetching {key}"))?;
++
++    let manifest = manifest(&dest);
++    let mut report = InstallReport::default();
++    let skills_root = roots.skills_dir();
++    fs::create_dir_all(&skills_root)?;
++    for (skill, dir) in skill_dirs(&dest, manifest.as_ref()) {
++        let target = skills_root.join(&skill);
++        if target.exists() {
++            report.skipped.push(format!("skill {skill}"));
++            continue;
++        }
++        copy_dir(&dir, &target)?;
++        report.skills.push(skill);
++    }
++
++    let servers = mcp_servers(&dest, manifest.as_ref());
++    if mode == InstallMode::Full && !servers.is_empty() {
++        let mut config = load_mcp_config(roots)?;
++        let table = config
++            .entry("servers")
++            .or_insert_with(|| Value::Object(Map::new()))
++            .as_object_mut()
++            .ok_or_else(|| anyhow!("mcp.json \"servers\" is not an object"))?;
++        let root = dest.to_string_lossy().into_owned();
++        for (server, mut entry) in servers {
++            let id = if table.contains_key(&server) {
++                format!("{name}-{server}")
++            } else {
++                server.clone()
++            };
++            if table.contains_key(&id) {
++                report.skipped.push(format!("MCP {server}"));
++                continue;
++            }
++            expand_root(&mut entry, &root);
++            if let Value::Object(obj) = &mut entry {
++                obj.entry("enabled").or_insert(Value::Bool(true));
++            }
++            table.insert(id.clone(), entry);
++            report.mcp_servers.push(id);
++        }
++        save_mcp_config(roots, &config)?;
++    }
++
++    let contents = scan(&dest);
++    if contents.apps > 0 {
++        report.unsupported.push(format!("{} Codex app(s)", contents.apps));
++    }
++    if contents.commands > 0 {
++        report.unsupported.push(format!("{} slash command(s)", contents.commands));
++    }
++    if contents.agents > 0 {
++        report.unsupported.push(format!("{} agent(s)", contents.agents));
++    }
++
++    let mut all = records(roots);
++    all.push(Record {
++        key,
++        ecosystem,
++        marketplace: marketplace.to_owned(),
++        name: name.to_owned(),
++        path: dest,
++        skills: report.skills.clone(),
++        mcp_servers: report.mcp_servers.clone(),
++    });
++    save_records(roots, &all)?;
++    Ok(report)
++}
++
++/// Remove what [`install`] added for `key`, and nothing else.
++pub fn uninstall(roots: &Roots, key: &str) -> Result<()> {
++    let mut all = records(roots);
++    let Some(index) = all.iter().position(|r| r.key == key) else {
++        bail!("{key} is not installed in Jcode");
++    };
++    let record = all.remove(index);
++    for skill in &record.skills {
++        let dir = roots.skills_dir().join(safe_name(skill)?);
++        if dir.exists() {
++            fs::remove_dir_all(dir)?;
++        }
++    }
++    if !record.mcp_servers.is_empty() {
++        let mut config = load_mcp_config(roots)?;
++        if let Some(Value::Object(table)) = config.get_mut("servers") {
++            for server in &record.mcp_servers {
++                table.remove(server);
++            }
++        }
++        save_mcp_config(roots, &config)?;
++    }
++    if record.path.starts_with(roots.plugins_dir()) && record.path.exists() {
++        fs::remove_dir_all(&record.path)?;
++    }
++    save_records(roots, &all)
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn write(path: &Path, text: &str) {
++        fs::create_dir_all(path.parent().unwrap()).unwrap();
++        fs::write(path, text).unwrap();
++    }
++
++    fn roots() -> (tempfile::TempDir, Roots) {
++        let dir = tempfile::tempdir().unwrap();
++        let roots = Roots {
++            home: dir.path().join("home"),
++            jcode_home: dir.path().join("home/.jcode"),
++        };
++        (dir, roots)
++    }
++
++    /// A Claude marketplace with one local plugin carrying a skill and a server.
++    fn claude_marketplace(roots: &Roots) -> PathBuf {
++        let market = roots.home.join(".claude/plugins/marketplaces/demo");
++        write(
++            &market.join(".claude-plugin/marketplace.json"),
++            r#"{"name":"demo","plugins":[
++                {"name":"helper","description":"Helps","source":"./plugins/helper","category":"dev"},
++                {"name":"remote","source":{"source":"git-subdir","url":"https://example.com/r.git","path":"plugins/x","ref":"v1"}}
++            ]}"#,
++        );
++        let plugin = market.join("plugins/helper");
++        write(&plugin.join(".claude-plugin/plugin.json"), r#"{"name":"helper","version":"1.0"}"#);
++        write(&plugin.join("skills/review/SKILL.md"), "---\nname: review\n---\n");
++        write(
++            &plugin.join(".mcp.json"),
++            r#"{"mcpServers":{"helper-db":{"command":"node","args":["${CLAUDE_PLUGIN_ROOT}/server.js"]}}}"#,
++        );
++        write(&plugin.join("commands/go.md"), "# go");
++        write(
++            &roots.home.join(".claude/plugins/known_marketplaces.json"),
++            &serde_json::json!({"demo": {"installLocation": market}}).to_string(),
++        );
++        market
++    }
++
++    #[test]
++    fn reads_claude_marketplace_sources() {
++        let (_tmp, roots) = roots();
++        let market = claude_marketplace(&roots);
++        let plugins = marketplace(&roots);
++        assert_eq!(plugins.len(), 2);
++        assert_eq!(plugins[0].name, "helper");
++        assert_eq!(plugins[0].source, Source::Local(market.join("plugins/helper")));
++        assert_eq!(plugins[0].category.as_deref(), Some("dev"));
++        assert_eq!(
++            plugins[1].source,
++            Source::Git {
++                url: "https://example.com/r.git".into(),
++                subdir: Some("plugins/x".into()),
++                git_ref: Some("v1".into()),
++            }
++        );
++    }
++
++    #[test]
++    fn lists_claude_and_codex_installs() {
++        let (_tmp, roots) = roots();
++        let claude = roots.home.join(".claude/plugins/cache/demo/helper/abc");
++        write(&claude.join(".claude-plugin/plugin.json"), r#"{"name":"helper","description":"Helps"}"#);
++        write(&claude.join(".mcp.json"), r#"{"github":{"type":"http","url":"https://x"}}"#);
++        write(
++            &roots.home.join(".claude/plugins/installed_plugins.json"),
++            &serde_json::json!({"version":2,"plugins":{"helper@demo":[{"installPath": claude}]}})
++                .to_string(),
++        );
++        let codex = roots.home.join(".codex/plugins/cache/openai-bundled/browser/1.0");
++        write(&codex.join(".codex-plugin/plugin.json"), r#"{"name":"browser","skills":"./skills/"}"#);
++        write(&codex.join("skills/browse/SKILL.md"), "x");
++        write(
++            &roots.home.join(".codex/config.toml"),
++            "[plugins.\"browser@openai-bundled\"]\nenabled = false\n",
++        );
++
++        let all = installed(&roots);
++        assert_eq!(all.len(), 2);
++        assert_eq!(all[0].ecosystem, Ecosystem::Claude);
++        assert_eq!(all[0].contents.mcp_servers, ["github"]);
++        assert_eq!(all[1].ecosystem, Ecosystem::Codex);
++        assert!(!all[1].enabled);
++        assert_eq!(all[1].contents.skills, ["browse"]);
++    }
++
++    #[test]
++    fn install_and_uninstall_touch_only_their_own_entries() {
++        let (_tmp, roots) = roots();
++        claude_marketplace(&roots);
++        // The user's own server and skill must survive.
++        write(
++            &roots.mcp_path(),
++            r#"{"servers":{"mine":{"command":"x"},"helper-db":{"command":"y"}}}"#,
++        );
++        write(&roots.skills_dir().join("mine/SKILL.md"), "x");
++
++        let entry = marketplace(&roots).into_iter().find(|p| p.name == "helper").unwrap();
++        let report = install(
++            &roots,
++            entry.ecosystem,
++            &entry.marketplace,
++            &entry.name,
++            &entry.source,
++            InstallMode::Full,
++        )
++        .unwrap();
++        assert_eq!(report.skills, ["review"]);
++        // Name taken by the user's server, so it is namespaced.
++        assert_eq!(report.mcp_servers, ["helper-helper-db"]);
++        assert_eq!(report.unsupported, ["1 slash command(s)"]);
++
++        let config = load_mcp_config(&roots).unwrap();
++        let server = &config["servers"]["helper-helper-db"];
++        let installed_dir = roots.plugins_dir().join("demo").join("helper");
++        assert_eq!(
++            server["args"][0],
++            format!("{}/server.js", installed_dir.to_string_lossy())
++        );
++        assert!(roots.skills_dir().join("review/SKILL.md").is_file());
++        assert!(marketplace(&roots)[0].in_jcode);
++
++        uninstall(&roots, "helper@demo").unwrap();
++        let config = load_mcp_config(&roots).unwrap();
++        assert!(config["servers"].get("helper-helper-db").is_none());
++        assert!(config["servers"].get("mine").is_some());
++        assert!(config["servers"].get("helper-db").is_some());
++        assert!(!roots.skills_dir().join("review").exists());
++        assert!(roots.skills_dir().join("mine").exists());
++        assert!(!installed_dir.exists());
++        assert!(records(&roots).is_empty());
++    }
++
++    #[test]
++    fn skills_only_install_leaves_mcp_alone() {
++        let (_tmp, roots) = roots();
++        claude_marketplace(&roots);
++        let entry = marketplace(&roots).into_iter().find(|p| p.name == "helper").unwrap();
++        let report = install(
++            &roots,
++            entry.ecosystem,
++            &entry.marketplace,
++            &entry.name,
++            &entry.source,
++            InstallMode::SkillsOnly,
++        )
++        .unwrap();
++        assert_eq!(report.skills, ["review"]);
++        assert!(report.mcp_servers.is_empty());
++        assert!(!roots.mcp_path().exists());
++    }
++
++    /// Reads this machine's real Claude Code and Codex folders. Read-only.
++    #[test]
++    #[ignore]
++    fn print_this_machine() {
++        let roots = Roots::detect().unwrap();
++        for p in installed(&roots) {
++            println!(
++                "{:<11} {:<28} skills={} mcp={:?} apps={}",
++                p.ecosystem.label(),
++                p.key(),
++                p.contents.skills.len(),
++                p.contents.mcp_servers,
++                p.contents.apps
++            );
++        }
++        let market = marketplace(&roots);
++        println!("marketplace entries: {}", market.len());
++        for (eco, n) in [Ecosystem::Claude, Ecosystem::Codex]
++            .map(|e| (e, market.iter().filter(|p| p.ecosystem == e).count()))
++        {
++            println!("  {}: {n}", eco.label());
++        }
++    }
++
++    #[test]
++    fn rejects_path_traversal_names() {
++        let (_tmp, roots) = roots();
++        let err = install(
++            &roots,
++            Ecosystem::Claude,
++            "demo",
++            "../evil",
++            &Source::Local(roots.home.clone()),
++            InstallMode::Full,
++        );
++        assert!(err.is_err());
++    }
++}
+diff --git a/crates/jcode-desktop-ui/src/commands.rs b/crates/jcode-desktop-ui/src/commands.rs
+index 5519489..71e7589 100644
+--- a/crates/jcode-desktop-ui/src/commands.rs
++++ b/crates/jcode-desktop-ui/src/commands.rs
+@@ -152,6 +152,7 @@ pub(crate) const REGISTERED_COMMANDS: &[RegisteredCommand] = &[
+     ),
+     RegisteredCommand::public("/version", "Show current version"),
+     RegisteredCommand::public("/changelog", "Show recent changes in this build"),
++    RegisteredCommand::public("/plugins", "Claude Code and Codex plugins, marketplaces and skills"),
+     RegisteredCommand::public("/applets", "Open the applet component showcase"),
+     RegisteredCommand::public("/info", "Show session info and tokens"),
+     RegisteredCommand::public(
+diff --git a/crates/jcode-desktop-ui/src/markdown.rs b/crates/jcode-desktop-ui/src/markdown.rs
+index c5971e2..9524167 100644
+--- a/crates/jcode-desktop-ui/src/markdown.rs
++++ b/crates/jcode-desktop-ui/src/markdown.rs
+@@ -1021,6 +1021,7 @@ fn styled_line_layout(
+     avatar: bool,
+ ) -> (gpui::AnyElement, gpui::TextLayout) {
+     let inline = inline_spans(source);
++    let rtl = starts_rtl(&inline.plain);
+     let mut highlights = inline.highlights.clone();
+     highlights.extend(fade_tail_highlights(&inline.plain, LEAF_FADE.take()));
+     if let Some(highlight) = selection.read(cx).highlight(&key, inline.plain.len()) {
+@@ -1089,6 +1090,7 @@ fn styled_line_layout(
+     );
+     let element = div()
+         .relative()
++        .when(rtl, |el| el.w_full().text_right())
+         .child(selectable)
+         .when(avatar, |el| {
+             el.child(div().absolute().top_0().left_0().child(assistant_avatar()))
+@@ -1097,6 +1099,20 @@ fn styled_line_layout(
+     (element, layout)
+ }
+ 
++/// Whether a paragraph reads right to left: its first strong letter is from
++/// a right-to-left script such as Persian or Arabic (UAX #9, rules P2/P3).
++pub(crate) fn starts_rtl(text: &str) -> bool {
++    for c in text.chars() {
++        if matches!(c as u32, 0x0590..=0x08FF | 0xFB1D..=0xFDFF | 0xFE70..=0xFEFF) {
++            return true;
++        }
++        if c.is_alphabetic() {
++            return false;
++        }
++    }
++    false
++}
++
+ fn hash(text: &str) -> u64 {
+     use std::hash::{Hash, Hasher};
+     let mut hasher = std::collections::hash_map::DefaultHasher::new();
+diff --git a/crates/jcode-desktop-ui/src/panel.rs b/crates/jcode-desktop-ui/src/panel.rs
+index db710b5..113b3e6 100644
+--- a/crates/jcode-desktop-ui/src/panel.rs
++++ b/crates/jcode-desktop-ui/src/panel.rs
+@@ -724,14 +724,19 @@ impl TodoistPanelState {
+ #[path = "panel_changelog.rs"]
+ mod changelog_panel;
+ 
++#[path = "panel_plugins.rs"]
++mod plugins_panel;
++
+ #[path = "panel_publish.rs"]
+ mod publish_panel;
+ 
+ impl Panel {
+     pub(crate) const CHANGELOG_SESSION_ID: &str = "desktop://changelog";
+ 
++    /// Also true for the plugins page: both are local, read-only panels and
++    /// take the same paths for focus, scrolling and closing.
+     pub(crate) fn is_changelog(&self) -> bool {
+-        self.session_id == Self::CHANGELOG_SESSION_ID
++        self.session_id == Self::CHANGELOG_SESSION_ID || self.is_plugins()
+     }
+ 
+     /// Activity painted over the tab. The session emoji stays still.
+@@ -1854,6 +1859,11 @@ impl Panel {
+                             });
+                             return;
+                         }
++                        if images.is_empty() && content.trim() == "/plugins" {
++                            _window
++                                .dispatch_action(Box::new(crate::ui_actions::OpenPlugins), app);
++                            return;
++                        }
+                         if images.is_empty() && content.trim() == "/changelog" {
+                             _window
+                                 .dispatch_action(Box::new(crate::ui_actions::OpenChangelog), app);
+@@ -4379,6 +4389,9 @@ impl Render for Panel {
+         if self.is_side_document() {
+             return self.render_side_document(window, cx);
+         }
++        if self.is_plugins() {
++            return self.render_plugins(window, cx);
++        }
+         if self.is_changelog() {
+             return self.render_changelog(window, cx);
+         }
+diff --git a/crates/jcode-desktop-ui/src/panel_plugins.rs b/crates/jcode-desktop-ui/src/panel_plugins.rs
+new file mode 100644
+index 0000000..feb0338
+--- /dev/null
++++ b/crates/jcode-desktop-ui/src/panel_plugins.rs
+@@ -0,0 +1,726 @@
++//! Plugins: what Claude Code and Codex have installed, what their
++//! marketplaces offer, and installing a plugin's skills and MCP servers into
++//! Jcode. A local panel like the changelog; never a runtime session.
++use super::*;
++use jcode_desktop_model::plugins::{
++    self, Ecosystem, InstallMode, InstalledPlugin, MarketplacePlugin, Roots, Source,
++};
++use std::cell::RefCell;
++
++const MEASURE: f32 = 760.;
++#[cfg(target_os = "windows")]
++const PROSE_FONT: &str = "Segoe UI";
++#[cfg(not(target_os = "windows"))]
++const PROSE_FONT: &str = ".SystemUIFont";
++/// The OpenAI plugins repository, offered as a one-click Codex marketplace.
++const OPENAI_PLUGINS: &str = "https://github.com/openai/plugins";
++
++#[derive(Clone, Copy, PartialEq, Eq)]
++enum Tab {
++    Connected,
++    Marketplace,
++}
++
++#[derive(Clone, Copy, PartialEq, Eq)]
++enum Filter {
++    All,
++    Only(Ecosystem),
++}
++
++struct State {
++    tab: Tab,
++    filter: Filter,
++    category: Option<String>,
++    loaded: bool,
++    installed: Vec<InstalledPlugin>,
++    market: Vec<MarketplacePlugin>,
++    busy: Option<String>,
++    message: Option<(bool, String)>,
++}
++
++thread_local! {
++    // One plugins page at a time. Keeping its state here leaves `Panel` untouched.
++    static STATE: RefCell<State> = RefCell::new(State {
++        tab: Tab::Connected,
++        filter: Filter::All,
++        category: None,
++        loaded: false,
++        installed: Vec::new(),
++        market: Vec::new(),
++        busy: None,
++        message: None,
++    });
++}
++
++fn with_state<R>(f: impl FnOnce(&mut State) -> R) -> R {
++    STATE.with(|state| f(&mut state.borrow_mut()))
++}
++
++fn reload(state: &mut State) {
++    if let Some(roots) = Roots::detect() {
++        state.installed = plugins::installed(&roots);
++        state.market = plugins::marketplace(&roots);
++    }
++    state.loaded = true;
++}
++
++fn pill(id: impl Into<gpui::ElementId>) -> gpui::Stateful<gpui::Div> {
++    div()
++        .id(id)
++        .cursor_pointer()
++        .rounded_full()
++        .px_3()
++        .py(px(3.))
++        .text_size(px(12.))
++}
++
++fn chip(text: String) -> gpui::Div {
++    let theme = Theme::global();
++    div()
++        .px(px(7.))
++        .py(px(1.))
++        .rounded_full()
++        .bg(theme.INLINE_CODE_BG)
++        .text_size(px(11.))
++        .text_color(theme.TEXT_DIM)
++        .child(text)
++}
++
++fn ecosystem_color(ecosystem: Ecosystem) -> gpui::Rgba {
++    let theme = Theme::global();
++    match ecosystem {
++        Ecosystem::Claude => theme.USER_ACCENT,
++        Ecosystem::Codex => theme.AI_ACCENT,
++        Ecosystem::Jcode => theme.ACCENT,
++    }
++}
++
++impl Panel {
++    pub(crate) const PLUGINS_SESSION_ID: &str = "desktop://plugins";
++
++    pub(crate) fn is_plugins(&self) -> bool {
++        self.session_id == Self::PLUGINS_SESSION_ID
++    }
++
++    /// Run a plugin job off the UI thread, then refresh the lists.
++    fn run_plugin_job(
++        &mut self,
++        label: String,
++        job: impl FnOnce(&Roots) -> anyhow::Result<String> + Send + 'static,
++        cx: &mut Context<Self>,
++    ) {
++        if with_state(|s| s.busy.is_some()) {
++            return;
++        }
++        with_state(|s| {
++            s.busy = Some(label);
++            s.message = None;
++        });
++        cx.notify();
++        let (tx, rx) = async_channel::bounded(1);
++        std::thread::Builder::new()
++            .name("jcode-plugins".into())
++            .spawn(move || {
++                let result = match Roots::detect() {
++                    Some(roots) => job(&roots).map_err(|e| format!("{e:#}")),
++                    None => Err("Could not find the home folder.".into()),
++                };
++                let _ = tx.send_blocking(result);
++            })
++            .expect("spawn plugins worker");
++        cx.spawn(async move |this, cx| {
++            if let Ok(result) = rx.recv().await {
++                let _ = this.update(cx, |_, cx| {
++                    with_state(|s| {
++                        s.busy = None;
++                        s.message = Some(match result {
++                            Ok(text) => (true, text),
++                            Err(text) => (false, text),
++                        });
++                        reload(s);
++                    });
++                    cx.notify();
++                });
++            }
++        })
++        .detach();
++    }
++
++    fn install_plugin(
++        &mut self,
++        ecosystem: Ecosystem,
++        marketplace: String,
++        name: String,
++        source: Source,
++        mode: InstallMode,
++        cx: &mut Context<Self>,
++    ) {
++        self.run_plugin_job(
++            format!("Installing {name}…"),
++            move |roots| {
++                let report = plugins::install(roots, ecosystem, &marketplace, &name, &source, mode)?;
++                let mut parts = vec![format!("Installed {name} into Jcode.")];
++                if !report.skills.is_empty() {
++                    parts.push(format!("Skills: {}.", report.skills.join(", ")));
++                }
++                if !report.mcp_servers.is_empty() {
++                    parts.push(format!("MCP servers: {}.", report.mcp_servers.join(", ")));
++                }
++                if report.skills.is_empty() && report.mcp_servers.is_empty() {
++                    parts.push("It had no skills or MCP servers Jcode can use.".into());
++                }
++                if !report.skipped.is_empty() {
++                    parts.push(format!("Kept your existing {}.", report.skipped.join(", ")));
++                }
++                if !report.unsupported.is_empty() {
++                    parts.push(format!("Not usable in Jcode: {}.", report.unsupported.join(", ")));
++                }
++                parts.push("Start a new session to use it.".into());
++                Ok(parts.join(" "))
++            },
++            cx,
++        );
++    }
++
++    fn uninstall_plugin(&mut self, key: String, cx: &mut Context<Self>) {
++        self.run_plugin_job(
++            format!("Removing {key}…"),
++            move |roots| {
++                plugins::uninstall(roots, &key)?;
++                Ok(format!("Removed {key} from Jcode."))
++            },
++            cx,
++        );
++    }
++
++    fn tab_button(&self, tab: Tab, label: String, cx: &Context<Self>) -> impl IntoElement {
++        let theme = Theme::global();
++        let selected = with_state(|s| s.tab == tab);
++        pill(match tab {
++            Tab::Connected => "plugins-tab-connected",
++            Tab::Marketplace => "plugins-tab-marketplace",
++        })
++        .text_color(if selected { theme.TEXT } else { theme.TEXT_DIM })
++        .when(selected, |el| el.bg(theme.HEADER_BG))
++        .hover(|el| el.bg(theme.HEADER_BG).text_color(theme.TEXT))
++        .on_click(cx.listener(move |_, _, _, cx| {
++            with_state(|s| s.tab = tab);
++            cx.notify();
++        }))
++        .child(label)
++    }
++
++    fn filter_button(
++        &self,
++        id: &'static str,
++        label: &'static str,
++        selected: bool,
++        apply: impl Fn(&mut State) + 'static,
++        cx: &Context<Self>,
++    ) -> impl IntoElement {
++        let theme = Theme::global();
++        pill(id)
++            .text_color(if selected { theme.TEXT } else { theme.TEXT_DIM })
++            .border_1()
++            .border_color(if selected { theme.PANEL_BORDER_FOCUS } else { theme.PANEL_BORDER })
++            .hover(|el| el.text_color(theme.TEXT))
++            .on_click(cx.listener(move |_, _, _, cx| {
++                with_state(|s| apply(s));
++                cx.notify();
++            }))
++            .child(label)
++    }
++
++    fn action_button(
++        &self,
++        id: (&'static str, usize),
++        label: &'static str,
++        primary: bool,
++        cx: &Context<Self>,
++        on_click: impl Fn(&mut Self, &mut Context<Self>) + 'static,
++    ) -> impl IntoElement {
++        let theme = Theme::global();
++        let busy = with_state(|s| s.busy.is_some());
++        pill(id)
++            .flex_shrink_0()
++            .when(primary, |el| el.bg(theme.ACCENT).text_color(theme.BG))
++            .when(!primary, |el| {
++                el.border_1().border_color(theme.PANEL_BORDER).text_color(theme.TEXT)
++            })
++            .when(busy, |el| el.opacity(0.5))
++            .hover(|el| el.opacity(0.85))
++            .on_click(cx.listener(move |panel, _, _, cx| {
++                cx.stop_propagation();
++                on_click(panel, cx);
++            }))
++            .child(label)
++    }
++
++    fn installed_row(&self, index: usize, plugin: &InstalledPlugin, cx: &Context<Self>) -> gpui::Div {
++        let theme = Theme::global();
++        let c = &plugin.contents;
++        let mut chips: Vec<String> = Vec::new();
++        if !c.skills.is_empty() {
++            chips.push(format!("{} skill{}", c.skills.len(), if c.skills.len() == 1 { "" } else { "s" }));
++        }
++        if !c.mcp_servers.is_empty() {
++            chips.push(format!("MCP: {}", c.mcp_servers.join(", ")));
++        }
++        if c.apps > 0 {
++            chips.push(format!("{} app(s), Codex only", c.apps));
++        }
++        if c.commands > 0 {
++            chips.push(format!("{} command(s)", c.commands));
++        }
++        if !plugin.enabled {
++            chips.push("disabled".into());
++        }
++        let usable = !c.skills.is_empty() || !c.mcp_servers.is_empty();
++        let key = plugin.key();
++        let (ecosystem, marketplace, name, path) = (
++            plugin.ecosystem,
++            plugin.marketplace.clone(),
++            plugin.name.clone(),
++            plugin.path.clone(),
++        );
++        let button = if plugin.in_jcode {
++            self.action_button(("plugin-remove", index), "Remove from Jcode", false, cx, move |panel, cx| {
++                panel.uninstall_plugin(key.clone(), cx)
++            })
++            .into_any_element()
++        } else if usable {
++            self.action_button(("plugin-use", index), "Use in Jcode", true, cx, move |panel, cx| {
++                panel.install_plugin(
++                    ecosystem,
++                    marketplace.clone(),
++                    name.clone(),
++                    Source::Local(path.clone()),
++                    InstallMode::Full,
++                    cx,
++                )
++            })
++            .into_any_element()
++        } else {
++            div()
++                .text_size(px(11.))
++                .text_color(theme.TEXT_FAINT)
++                .child("Nothing Jcode can use")
++                .into_any_element()
++        };
++        row(
++            plugin.ecosystem,
++            plugin.title().to_owned(),
++            plugin.marketplace.clone(),
++            c.description.clone().unwrap_or_default(),
++            chips,
++            plugin.in_jcode,
++            button,
++        )
++    }
++
++    fn market_row(&self, index: usize, plugin: &MarketplacePlugin, cx: &Context<Self>) -> gpui::Div {
++        let mut chips = Vec::new();
++        if let Some(category) = &plugin.category {
++            chips.push(category.clone());
++        }
++        if matches!(plugin.source, Source::Git { .. }) {
++            chips.push("downloads from git".into());
++        }
++        let buttons = if plugin.in_jcode {
++            let key = plugin.key();
++            div()
++                .flex()
++                .gap_1()
++                .child(self.action_button(("market-remove", index), "Remove", false, cx, move |panel, cx| {
++                    panel.uninstall_plugin(key.clone(), cx)
++                }))
++        } else {
++            let full = plugin.clone();
++            let skills = plugin.clone();
++            div()
++                .flex()
++                .gap_1()
++                .child(self.action_button(("market-skills", index), "Skills only", false, cx, move |panel, cx| {
++                    panel.install_plugin(
++                        skills.ecosystem,
++                        skills.marketplace.clone(),
++                        skills.name.clone(),
++                        skills.source.clone(),
++                        InstallMode::SkillsOnly,
++                        cx,
++                    )
++                }))
++                .child(self.action_button(("market-install", index), "Install", true, cx, move |panel, cx| {
++                    panel.install_plugin(
++                        full.ecosystem,
++                        full.marketplace.clone(),
++                        full.name.clone(),
++                        full.source.clone(),
++                        InstallMode::Full,
++                        cx,
++                    )
++                }))
++        };
++        row(
++            plugin.ecosystem,
++            plugin.name.clone(),
++            plugin.marketplace.clone(),
++            plugin.description.clone(),
++            chips,
++            plugin.in_jcode,
++            buttons.into_any_element(),
++        )
++    }
++
++    pub(super) fn render_plugins(&self, _window: &Window, cx: &Context<Self>) -> gpui::AnyElement {
++        let theme = Theme::global();
++        with_state(|s| {
++            if !s.loaded {
++                reload(s);
++            }
++        });
++        let (tab, filter, category, busy, message, connected_count, market_count) = with_state(|s| {
++            (
++                s.tab,
++                s.filter,
++                s.category.clone(),
++                s.busy.clone(),
++                s.message.clone(),
++                s.installed.len(),
++                s.market.len(),
++            )
++        });
++        let keep = |ecosystem: Ecosystem| match filter {
++            Filter::All => true,
++            Filter::Only(only) => only == ecosystem,
++        };
++
++        let mut list = div().flex().flex_col().gap_2();
++        match tab {
++            Tab::Connected => {
++                let groups = with_state(|s| s.installed.clone());
++                for ecosystem in [Ecosystem::Claude, Ecosystem::Codex, Ecosystem::Jcode] {
++                    if !keep(ecosystem) {
++                        continue;
++                    }
++                    let items: Vec<_> = groups
++                        .iter()
++                        .enumerate()
++                        .filter(|(_, p)| p.ecosystem == ecosystem)
++                        .collect();
++                    if items.is_empty() {
++                        continue;
++                    }
++                    list = list.child(section_label(format!(
++                        "{} · {}",
++                        match ecosystem {
++                            Ecosystem::Jcode => "Installed in Jcode",
++                            other => other.label(),
++                        },
++                        items.len()
++                    )));
++                    for (index, plugin) in items {
++                        list = list.child(self.installed_row(index, plugin, cx));
++                    }
++                }
++                if connected_count == 0 {
++                    list = list.child(empty("No Claude Code or Codex plugins found on this computer."));
++                }
++            }
++            Tab::Marketplace => {
++                let market = with_state(|s| s.market.clone());
++                let mut categories: Vec<String> = market
++                    .iter()
++                    .filter(|p| keep(p.ecosystem))
++                    .filter_map(|p| p.category.clone())
++                    .collect();
++                categories.sort();
++                categories.dedup();
++                let mut cats = div().flex().flex_wrap().gap_1().child(self.filter_button(
++                    "plugins-cat-all",
++                    "All categories",
++                    category.is_none(),
++                    |s| s.category = None,
++                    cx,
++                ));
++                for (i, name) in categories.into_iter().enumerate() {
++                    let selected = category.as_deref() == Some(name.as_str());
++                    let value = name.clone();
++                    cats = cats.child(
++                        pill(("plugins-cat", i))
++                            .text_color(if selected { theme.TEXT } else { theme.TEXT_DIM })
++                            .border_1()
++                            .border_color(if selected { theme.PANEL_BORDER_FOCUS } else { theme.PANEL_BORDER })
++                            .hover(|el| el.text_color(theme.TEXT))
++                            .on_click(cx.listener(move |_, _, _, cx| {
++                                let value = value.clone();
++                                with_state(|s| s.category = Some(value));
++                                cx.notify();
++                            }))
++                            .child(name),
++                    );
++                }
++                list = list.child(cats);
++                let shown: Vec<_> = market
++                    .iter()
++                    .enumerate()
++                    .filter(|(_, p)| keep(p.ecosystem))
++                    .filter(|(_, p)| category.is_none() || p.category == category)
++                    .collect();
++                list = list.child(section_label(format!("{} plugins", shown.len())));
++                for (index, plugin) in shown {
++                    list = list.child(self.market_row(index, plugin, cx));
++                }
++                list = list.child(
++                    div()
++                        .mt_4()
++                        .flex()
++                        .items_center()
++                        .gap_3()
++                        .text_size(px(12.))
++                        .text_color(theme.TEXT_DIM)
++                        .child("More Codex plugins live in the OpenAI plugins repository.")
++                        .child(self.action_button(("plugins-add-openai", 0), "Add OpenAI marketplace", false, cx, |panel, cx| {
++                            panel.run_plugin_job(
++                                "Downloading the OpenAI plugins marketplace…".into(),
++                                |roots| {
++                                    plugins::add_marketplace(roots, OPENAI_PLUGINS)?;
++                                    Ok("Added the OpenAI plugins marketplace.".into())
++                                },
++                                cx,
++                            )
++                        })),
++                );
++            }
++        }
++
++        let filters = div()
++            .flex()
++            .gap_1()
++            .child(self.filter_button("plugins-all", "All", filter == Filter::All, |s| {
++                s.filter = Filter::All;
++                s.category = None;
++            }, cx))
++            .child(self.filter_button(
++                "plugins-claude",
++                "Claude Code",
++                filter == Filter::Only(Ecosystem::Claude),
++                |s| {
++                    s.filter = Filter::Only(Ecosystem::Claude);
++                    s.category = None;
++                },
++                cx,
++            ))
++            .child(self.filter_button(
++                "plugins-codex",
++                "Codex",
++                filter == Filter::Only(Ecosystem::Codex),
++                |s| {
++                    s.filter = Filter::Only(Ecosystem::Codex);
++                    s.category = None;
++                },
++                cx,
++            ));
++
++        let status = busy
++            .map(|text| (None, text))
++            .or_else(|| message.map(|(ok, text)| (Some(ok), text)));
++
++        div()
++            .id("desktop-plugins")
++            .debug_selector(|| "desktop-plugins".into())
++            .size_full()
++            .flex()
++            .flex_col()
++            .overflow_hidden()
++            .font_family(PROSE_FONT)
++            .text_size(px(14.))
++            .text_color(theme.TEXT)
++            .track_focus(&self.focus_handle)
++            .on_key_down(cx.listener(|_, event: &gpui::KeyDownEvent, window, cx| {
++                if event.keystroke.key == "escape" {
++                    window.dispatch_action(Box::new(crate::ui_actions::ClosePanel), cx);
++                    cx.stop_propagation();
++                }
++            }))
++            .child(
++                div().px_5().py_3().flex_shrink_0().child(
++                    div()
++                        .w_full()
++                        .max_w(px(MEASURE))
++                        .mx_auto()
++                        .flex()
++                        .flex_col()
++                        .gap_3()
++                        .child(
++                            div()
++                                .flex()
++                                .items_center()
++                                .gap_2()
++                                .child(
++                                    div()
++                                        .mr_2()
++                                        .text_size(px(16.))
++                                        .font_weight(gpui::FontWeight::SEMIBOLD)
++                                        .child("Plugins"),
++                                )
++                                .child(self.tab_button(Tab::Connected, format!("Connected · {connected_count}"), cx))
++                                .child(self.tab_button(Tab::Marketplace, format!("Marketplace · {market_count}"), cx))
++                                .child(div().flex_1())
++                                .child(
++                                    pill("plugins-refresh")
++                                        .text_color(theme.TEXT_DIM)
++                                        .hover(|el| el.bg(theme.HEADER_BG).text_color(theme.TEXT))
++                                        .on_click(cx.listener(|_, _, _, cx| {
++                                            with_state(reload);
++                                            cx.notify();
++                                        }))
++                                        .child("Refresh"),
++                                )
++                                .child(
++                                    pill("close-plugins")
++                                        .text_color(theme.TEXT_DIM)
++                                        .hover(|el| el.bg(theme.HEADER_BG).text_color(theme.TEXT))
++                                        .on_click(|_, window, cx| {
++                                            window.dispatch_action(
++                                                Box::new(crate::ui_actions::ClosePanel),
++                                                cx,
++                                            )
++                                        })
++                                        .child("Close"),
++                                ),
++                        )
++                        .child(filters)
++                        .when_some(status, |el, (ok, text)| {
++                            el.child(
++                                div()
++                                    .px_3()
++                                    .py_2()
++                                    .rounded_md()
++                                    .text_size(px(12.))
++                                    .bg(match ok {
++                                        Some(false) => theme.ERROR_BG,
++                                        _ => theme.HEADER_BG,
++                                    })
++                                    .text_color(match ok {
++                                        Some(false) => theme.ERROR,
++                                        Some(true) => theme.TEXT,
++                                        None => theme.TEXT_DIM,
++                                    })
++                                    .child(text),
++                            )
++                        }),
++                ),
++            )
++            .child(
++                div()
++                    .id(match tab {
++                        Tab::Connected => "plugins-scroll-connected",
++                        Tab::Marketplace => "plugins-scroll-marketplace",
++                    })
++                    .flex_1()
++                    .min_h_0()
++                    .overflow_y_scroll()
++                    .px_5()
++                    .pt_2()
++                    .pb_10()
++                    .child(div().w_full().max_w(px(MEASURE)).mx_auto().child(list)),
++            )
++            .into_any_element()
++    }
++}
++
++fn section_label(text: String) -> gpui::Div {
++    div()
++        .mt_3()
++        .text_size(px(11.))
++        .font_weight(gpui::FontWeight::SEMIBOLD)
++        .text_color(Theme::global().TEXT_DIM)
++        .child(text)
++}
++
++fn empty(text: &'static str) -> gpui::Div {
++    div()
++        .py_6()
++        .text_size(px(13.))
++        .text_color(Theme::global().TEXT_DIM)
++        .child(text)
++}
++
++fn row(
++    ecosystem: Ecosystem,
++    title: String,
++    marketplace: String,
++    description: String,
++    chips: Vec<String>,
++    in_jcode: bool,
++    action: gpui::AnyElement,
++) -> gpui::Div {
++    let theme = Theme::global();
++    div()
++        .flex()
++        .items_center()
++        .gap_3()
++        .px_3()
++        .py_2()
++        .rounded_lg()
++        .border_1()
++        .border_color(theme.PANEL_BORDER)
++        .bg(theme.PANEL_BG)
++        .child(
++            div()
++                .flex_shrink_0()
++                .size(px(8.))
++                .rounded_full()
++                .bg(ecosystem_color(ecosystem)),
++        )
++        .child(
++            div()
++                .flex_1()
++                .min_w_0()
++                .flex()
++                .flex_col()
++                .gap(px(3.))
++                .child(
++                    div()
++                        .flex()
++                        .items_center()
++                        .gap_2()
++                        .child(
++                            div()
++                                .font_weight(gpui::FontWeight::SEMIBOLD)
++                                .text_size(px(13.))
++                                .child(title),
++                        )
++                        .child(
++                            div()
++                                .text_size(px(11.))
++                                .text_color(theme.TEXT_FAINT)
++                                .child(format!("{} · {marketplace}", ecosystem.label())),
++                        )
++                        .when(in_jcode, |el| {
++                            el.child(
++                                div()
++                                    .text_size(px(11.))
++                                    .text_color(theme.OK)
++                                    .child("✓ in Jcode"),
++                            )
++                        }),
++                )
++                .when(!description.is_empty(), |el| {
++                    el.child(
++                        div()
++                            .text_size(px(12.))
++                            .line_height(px(17.))
++                            .text_color(theme.TEXT_DIM)
++                            .line_clamp(2)
++                            .text_ellipsis()
++                            .child(description),
++                    )
++                })
++                .when(!chips.is_empty(), |el| {
++                    el.child(div().flex().flex_wrap().gap_1().children(chips.into_iter().map(chip)))
++                }),
++        )
++        .child(action)
++}
+diff --git a/crates/jcode-desktop-ui/src/ui_actions.rs b/crates/jcode-desktop-ui/src/ui_actions.rs
+index f81dfef..1483b0c 100644
+--- a/crates/jcode-desktop-ui/src/ui_actions.rs
++++ b/crates/jcode-desktop-ui/src/ui_actions.rs
+@@ -66,6 +66,7 @@ gpui::actions!(
+         ClosePanel,
+         ToggleOnboardingSimulator,
+         OpenChangelog,
++        OpenPlugins,
+         OpenResume,
+     ]
+ );
+diff --git a/crates/jcode-desktop-ui/src/workspace.rs b/crates/jcode-desktop-ui/src/workspace.rs
+index db3f738..d4e4c02 100644
+--- a/crates/jcode-desktop-ui/src/workspace.rs
++++ b/crates/jcode-desktop-ui/src/workspace.rs
+@@ -153,7 +153,7 @@ mod default_directory_tests;
+ // Actions that panels dispatch to the workspace live in a leaf module so the
+ // panel layer does not depend on this one.
+ pub(crate) use crate::ui_actions::{
+-    ClosePanel, OpenAccounts, OpenAppletShowcase, OpenChangelog, OpenResume, PublishDesktop,
++    ClosePanel, OpenAccounts, OpenAppletShowcase, OpenChangelog, OpenPlugins, OpenResume, PublishDesktop,
+     ToggleOnboardingSimulator,
+ };
+ 
+@@ -8625,6 +8625,7 @@ impl Render for Workspace {
+             .on_action(cx.listener(Self::cycle_theme))
+             .on_action(cx.listener(Self::new_help_session))
+             .on_action(cx.listener(Self::open_changelog))
++            .on_action(cx.listener(Self::open_plugins))
+             .on_action(cx.listener(Self::open_resume))
+             .on_action(cx.listener(Self::cycle_width))
+             .on_action(cx.listener(Self::maximize_width))
+diff --git a/crates/jcode-desktop-ui/src/workspace_changelog.rs b/crates/jcode-desktop-ui/src/workspace_changelog.rs
+index 6ef5ae3..91e8173 100644
+--- a/crates/jcode-desktop-ui/src/workspace_changelog.rs
++++ b/crates/jcode-desktop-ui/src/workspace_changelog.rs
+@@ -7,12 +7,33 @@ impl Workspace {
+         _: &OpenChangelog,
+         window: &mut Window,
+         cx: &mut Context<Self>,
++    ) {
++        self.open_local_panel(Panel::CHANGELOG_SESSION_ID, "Desktop changelog", window, cx);
++    }
++
++    pub(crate) fn open_plugins(
++        &mut self,
++        _: &OpenPlugins,
++        window: &mut Window,
++        cx: &mut Context<Self>,
++    ) {
++        self.open_local_panel(Panel::PLUGINS_SESSION_ID, "Plugins", window, cx);
++    }
++
++    /// Open (or move to) a local, read-only panel such as the changelog or
++    /// the plugins page at the start of the current row.
++    fn open_local_panel(
++        &mut self,
++        session_id: &'static str,
++        title: &'static str,
++        window: &mut Window,
++        cx: &mut Context<Self>,
+     ) {
+         if self.single_panel {
+             let panel = cx.new(|cx| {
+                 Panel::new(
+-                    Panel::CHANGELOG_SESSION_ID.into(),
+-                    Some("Desktop changelog".into()),
++                    session_id.into(),
++                    Some(title.into()),
+                     None,
+                     self.bridge.clone(),
+                     cx,
+@@ -35,12 +56,12 @@ impl Workspace {
+         let existing = self
+             .slots
+             .iter()
+-            .position(|slot| !slot.closing && slot.panel.read(cx).is_changelog());
++            .position(|slot| !slot.closing && slot.panel.read(cx).session_id == session_id);
+         let index = existing.unwrap_or_else(|| {
+             let panel = cx.new(|cx| {
+                 Panel::new(
+-                    Panel::CHANGELOG_SESSION_ID.into(),
+-                    Some("Desktop changelog".into()),
++                    session_id.into(),
++                    Some(title.into()),
+                     None,
+                     self.bridge.clone(),
+                     cx,
+diff --git a/crates/jcode-desktop-ui/src/workspace_single_panel.rs b/crates/jcode-desktop-ui/src/workspace_single_panel.rs
+index 07cb8a6..d55a899 100644
+--- a/crates/jcode-desktop-ui/src/workspace_single_panel.rs
++++ b/crates/jcode-desktop-ui/src/workspace_single_panel.rs
+@@ -147,6 +147,7 @@ impl Workspace {
+             .on_action(cx.listener(Self::open_accounts))
+             .on_action(cx.listener(Self::open_model_window_or_picker))
+             .on_action(cx.listener(Self::open_changelog))
++            .on_action(cx.listener(Self::open_plugins))
+             .on_action(cx.listener(Self::open_resume))
+             .on_action(cx.listener(Self::open_change_review))
+             .on_action(cx.listener(Self::close_change_review))

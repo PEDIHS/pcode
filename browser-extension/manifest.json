@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "Jcode Browser Agent",
+  "version": "0.3.1",
+  "description": "Lets the Jcode agent work in its own Chrome tabs (\"Jcode\" tab group) through Playwright MCP, with a purple border and agent cursor on the controlled tab.",
+  "permissions": [
+    "debugger",
+    "activeTab",
+    "tabs",
+    "tabGroups",
+    "scripting",
+    "storage",
+    "system.display"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/overlay.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_title": "Jcode Browser Agent",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxz3kg8NTrTSNfzLQfY6TqgXRQhJr80Vifho/G5X06MKhQtCI2LpMTdvtonNAVZmCT/jC6N5u3+k89FqBcVoANUIDKN/Y/GVESQ+ulz3qRIPZjipVnw51xAg/z7zlrleG1DkQeTVtfRMZPRkA/o7dRQtm1/lML157jS3mY+CQOluZayGkgMJDHpGufMinVQ5FQbO0LifAgseVzW79K5C16/mVHbU79bi9LAf7hIpDHsvKrwvIsrwlFmYFac7Oapn5r0oLO87a3f/E1Md0VDGjtjhPQ1GAnHWZMEFXguJwuUB1gd4ZMUi8Sx0DIXOB7jOE9t0keTV3UzL4pGP54b6xtQIDAQAB"
+}
