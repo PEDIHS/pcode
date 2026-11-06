@@ -193,10 +193,27 @@ index f036a2b..1b5b6fd 100644
 +    }
 +}
 diff --git a/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs b/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
-index 816e246..3c7f64a 100644
+index 816e246..5da5c7f 100644
 --- a/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
 +++ b/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
-@@ -57,8 +57,11 @@ fn method_pill_selects_existing_provider_inline(cx: &mut gpui::TestAppContext) {
+@@ -50,6 +50,16 @@ fn method_pill_selects_existing_provider_inline(cx: &mut gpui::TestAppContext) {
+         vcx.debug_bounds("login-close").is_none(),
+         "no Accounts sign-in UI"
+     );
++    // Exercise a concrete stored account, not the provider-only fixture row.
++    panel.update(vcx, |panel, cx| {
++        let state = panel.login.as_mut().unwrap();
++        state.accounts.logins.retain(|login| login.provider != "claude");
++        state.accounts.logins.push(jcode_base::auth::account_pool::OAuthLogin {
++            provider: "claude", label: "claude-selected".into(), email: None, active: true,
++        });
++        cx.notify();
++    });
++    vcx.run_until_parked();
+     let row = vcx
+         .debug_bounds("login-provider-claude")
+         .expect("connected provider row is shown");
+@@ -57,8 +67,11 @@ fn method_pill_selects_existing_provider_inline(cx: &mut gpui::TestAppContext) {
      vcx.run_until_parked();
      assert!(matches!(
          commands.recv_timeout(std::time::Duration::from_millis(100)),
@@ -205,7 +222,7 @@ index 816e246..3c7f64a 100644
 +        Ok(Command::RuntimeCommand { session_id, command: jcode_sdk::api::RuntimeCommand::Auth, args })
 +            if session_id == "session-a" && args.first().map(String::as_str) == Some("select-account")
 +                && args.get(1).map(String::as_str) == Some("claude")
-+                && args.get(2).is_some_and(|label| !label.is_empty())
++                && args.get(2).map(String::as_str) == Some("claude-selected")
 +                && args.get(3).map(String::as_str) == Some("claude-oauth:claude-fable-5")
      ));
      assert!(vcx.debug_bounds("composer-provider-picker").is_none());

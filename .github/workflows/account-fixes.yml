@@ -40,6 +40,7 @@ jobs:
           "GPUI_FXC_PATH=$($fxc.FullName)" >> $env:GITHUB_ENV
       - uses: Swatinem/rust-cache@v2
         with:
+          cache-on-failure: true
           workspaces: |
             desktop -> target
             jcode -> target
@@ -55,6 +56,9 @@ jobs:
       - name: Test runtime commands
         working-directory: jcode
         run: cargo test -p jcode-app-core runtime_special_commands
+      - name: Test desktop workspace
+        working-directory: desktop
+        run: cargo test --workspace
       - name: Build desktop
         working-directory: desktop
         run: cargo build --release --bin jcode-desktop
