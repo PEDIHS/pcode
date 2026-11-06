@@ -1,0 +1,84 @@
+name: Windows account fixes validation
+on:
+  pull_request:
+    branches: [main]
+    paths: ['desktop/**', 'patches/runtime-account-selection.patch', 'patches/desktop-account-selection.patch', '.github/workflows/account-fixes.yml']
+permissions:
+  contents: read
+concurrency:
+  group: account-fixes-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-2025
+    timeout-minutes: 120
+    env:
+      CARGO_BUILD_RUSTC_WRAPPER: ''
+      CARGO_PROFILE_RELEASE_DEBUG: '0'
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: 1jehuang/jcode
+          ref: 217c196bbd7038b57a682221b5f1611f2ccc5bc3
+          path: jcode
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Apply runtime account selection
+        shell: pwsh
+        run: |
+          git apply --directory=desktop --check patches/desktop-account-selection.patch
+          if ($LASTEXITCODE) { throw 'Desktop patch check failed' }
+          git apply --directory=desktop patches/desktop-account-selection.patch
+          if ($LASTEXITCODE) { throw 'Desktop patch failed' }
+          git -C jcode apply --check ../patches/runtime-account-selection.patch
+          if ($LASTEXITCODE) { throw 'Runtime patch check failed' }
+          git -C jcode apply ../patches/runtime-account-selection.patch
+          if ($LASTEXITCODE) { throw 'Runtime patch failed' }
+          $fxc = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse -Filter fxc.exe | Where-Object FullName -Match '\\x64\\' | Sort-Object FullName -Descending | Select-Object -First 1
+          if (-not $fxc) { throw 'Windows SDK fxc.exe missing' }
+          "GPUI_FXC_PATH=$($fxc.FullName)" >> $env:GITHUB_ENV
+      - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+          workspaces: |
+            desktop -> target
+            jcode -> target
+      - name: Test account bridge
+        working-directory: desktop
+        run: cargo test -p jcode-desktop-harness
+      - name: Test quota ranking and picker
+        working-directory: desktop
+        run: |
+          cargo test -p jcode-desktop-ui --lib quota_tests
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          cargo test -p jcode-desktop-ui --lib method_pill_selects_existing_provider_inline
+      - name: Test runtime commands
+        working-directory: jcode
+        run: cargo test -p jcode-app-core runtime_special_commands
+      - name: Test desktop workspace
+        working-directory: desktop
+        run: cargo test --workspace
+      - name: Build desktop
+        working-directory: desktop
+        run: cargo build --release --bin jcode-desktop
+      - name: Build runtime
+        working-directory: jcode
+        run: |
+          cargo build --release --bin jcode
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          cargo build --release -p jcode-harness-api-server --bin jcode-harness-api-bridge
+      - name: Assemble versioned binaries
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path account-fixes-build | Out-Null
+          Copy-Item desktop/target/release/jcode-desktop.exe account-fixes-build/
+          Copy-Item jcode/target/release/jcode.exe account-fixes-build/
+          Copy-Item jcode/target/release/jcode-harness-api-bridge.exe account-fixes-build/
+          git rev-parse HEAD | Set-Content account-fixes-build/source-commit.txt
+          Get-ChildItem account-fixes-build/*.exe | Get-FileHash -Algorithm SHA256 | Format-List | Out-File account-fixes-build/checksums.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jcode-account-fixes-windows-x64
+          path: account-fixes-build
+          retention-days: 14

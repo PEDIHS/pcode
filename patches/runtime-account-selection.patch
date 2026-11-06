@@ -1,0 +1,42 @@
+diff --git a/crates/jcode-app-core/src/server/runtime_special_commands.rs b/crates/jcode-app-core/src/server/runtime_special_commands.rs
+index 86bccb1..a45dc5a 100644
+--- a/crates/jcode-app-core/src/server/runtime_special_commands.rs
++++ b/crates/jcode-app-core/src/server/runtime_special_commands.rs
+@@ -81,6 +81,37 @@ pub(super) async fn execute(
+ ) -> Result<(Value, String)> {
+     match command {
+         RuntimeCommand::Auth => {
++            if let [action, provider, label, model] = args {
++                if action != "select-account" {
++                    bail!("Expected auth select-account <openai|claude> <stored-label>");
++                }
++                // Labels are validated by the auth store. No tokens cross the API.
++                let previous = match provider.as_str() {
++                    "openai" => crate::auth::codex::active_account_label(),
++                    "claude" => crate::auth::claude::active_account_label(),
++                    _ => bail!("Named account selection supports OpenAI and Claude only"),
++                };
++                match provider.as_str() {
++                    "openai" => crate::auth::codex::set_active_account(label)?,
++                    "claude" => crate::auth::claude::set_active_account(label)?,
++                    _ => bail!("Named account selection supports OpenAI and Claude only"),
++                }
++                crate::auth::AuthStatus::invalidate_cache();
++                agent.provider_handle().on_auth_changed_preserve_current_provider();
++                if let Err(error) = agent.set_model(model) {
++                    if let Some(previous) = previous {
++                        match provider.as_str() {
++                            "openai" => crate::auth::codex::set_active_account(&previous)?,
++                            "claude" => crate::auth::claude::set_active_account(&previous)?,
++                            _ => unreachable!(),
++                        }
++                        agent.provider_handle().on_auth_changed_preserve_current_provider();
++                    }
++                    return Err(error);
++                }
++                let data = json!({"provider": provider, "account_label": label, "model": model, "selected": true});
++                return Ok((data, format!("Selected {provider} account {label}.")));
++            }
+             status_args(args)?;
+             let status = tokio::task::spawn_blocking(crate::auth::AuthStatus::check_fast).await?;
+             let providers: Vec<_> = crate::provider_catalog::auth_status_login_providers()
