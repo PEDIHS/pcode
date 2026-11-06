@@ -1,0 +1,159 @@
+diff --git a/crates/jcode-desktop-ui/src/panel_login_accounts.rs b/crates/jcode-desktop-ui/src/panel_login_accounts.rs
+index f36d62a..a3e26df 100644
+--- a/crates/jcode-desktop-ui/src/panel_login_accounts.rs
++++ b/crates/jcode-desktop-ui/src/panel_login_accounts.rs
+@@ -647,7 +647,9 @@ impl Panel {
+             .child(label)
+             // Informational pills must not fall through to the row's sign-in.
+             .on_mouse_down(gpui::MouseButton::Left, |_, _, cx| cx.stop_propagation());
+-        if offerable {
++        // Always allow the read-only provider check, even when cached quota
++        // says a reset is not currently useful. Redemption still requires review.
++        {
+             let reset = reset.clone();
+             pill = pill
+                 .cursor_pointer()
+@@ -656,8 +658,6 @@ impl Panel {
+                     cx.stop_propagation();
+                     cx.emit(AccountsPanelRedeemReset(reset.clone()));
+                 }));
+-        } else {
+-            pill = pill.on_click(|_, _, cx| cx.stop_propagation());
+         }
+         pill.into_any_element()
+     }
+diff --git a/crates/jcode-desktop-ui/src/panel_provider_picker.rs b/crates/jcode-desktop-ui/src/panel_provider_picker.rs
+index f036a2b..1b5b6fd 100644
+--- a/crates/jcode-desktop-ui/src/panel_provider_picker.rs
++++ b/crates/jcode-desktop-ui/src/panel_provider_picker.rs
+@@ -27,7 +27,7 @@ impl Panel {
+     pub(super) fn select_existing_provider(
+         &mut self,
+         provider: LoginProvider,
+-        _label: Option<String>,
++        label: Option<String>,
+         window: &mut Window,
+         cx: &mut Context<Self>,
+     ) {
+@@ -47,10 +47,20 @@ impl Panel {
+         };
+         self.close_login_picker(cx);
+         if self.preview_state.is_none() {
+-            self.bridge.send(Command::SetModel {
+-                session_id: self.session_id.clone(),
+-                model: spec.clone(),
+-            });
++            // Account identity is independent of the provider/model route.
++            // Queue both operations on the attached session's own worker.
++            if let Some(label) = label.as_ref() {
++                self.bridge.send(Command::RuntimeCommand {
++                    session_id: self.session_id.clone(),
++                    command: jcode_sdk::api::RuntimeCommand::Auth,
++                    args: vec!["select-account".into(), provider.id.into(), label.clone(), spec.clone()],
++                });
++            } else {
++                self.bridge.send(Command::SetModel {
++                    session_id: self.session_id.clone(),
++                    model: spec.clone(),
++                });
++            }
+         }
+         self.items.push(Item::Assistant(format!(
+             "Switching provider to {}…",
+@@ -89,9 +99,49 @@ impl Panel {
+                 .contains(query.trim())
+             })
+             .collect();
++        let best_openai = rows.iter()
++            .filter(|row| row.provider.id == "openai" && row.label.is_some())
++            .filter(|row| !state.accounts.pool.excluded.contains(&row.key))
++            .filter(|row| row.status == super::connection::ConnectionStatus::Connected)
++            .filter_map(|row| {
++                let values: Vec<f32> = row.limits.iter().map(|limit| limit.usage_percent).collect();
++                usable_quota(&values).map(|used| (row, used))
++            })
++            .min_by(|(left, a), (right, b)| a.total_cmp(b)
++                .then_with(|| right.active.cmp(&left.active)))
++            .map(|(row, _)| (row.provider, row.label.clone()));
+         let visible = Rc::new(Vec::new());
+         let remote = self.login_is_remote();
+         let mut body = div().flex().flex_col().gap_2();
++        if !self.login_is_remote() {
++            if let Some((provider, label)) = best_openai {
++                body = body.child(login_button("provider-picker-best-openai", "Best available OpenAI · light model")
++                    .on_click(cx.listener(move |this, _, window, cx| {
++                        // Refuse a heavy fallback when the light model is unavailable.
++                        let light = this.input.read(cx)
++                            .provider_route_spec("openai", Some("gpt-6-luna"))
++                            .filter(|spec| spec.contains("gpt-6-luna"));
++                        if light.is_none() {
++                            if let Some(state) = this.login.as_mut() {
++                                state.error = Some("No light OpenAI model is available. Refresh the model list or select a model explicitly.".into());
++                            }
++                            cx.notify();
++                            return;
++                        }
++                        if this.preview_state.is_none() {
++                            this.bridge.send(Command::RuntimeCommand {
++                                session_id: this.session_id.clone(),
++                                command: jcode_sdk::api::RuntimeCommand::Auth,
++                                args: vec!["select-account".into(), provider.id.into(),
++                                    label.clone().unwrap(), light.unwrap()],
++                            });
++                        }
++                        this.close_login_picker(cx);
++                        this.focus_input(window, cx);
++                        cx.notify();
++                    })));
++            }
++        }
+         if remote {
+             body = body.child("Select a remote provider through the model picker. Local sign-ins are not available on this machine.");
+         } else if rows.is_empty() {
+@@ -162,3 +212,28 @@ impl Panel {
+         )
+     }
+ }
++
++// Score the tightest quota window, not an average that can hide exhaustion.
++fn usable_quota(values: &[f32]) -> Option<f32> {
++    if values.is_empty() || values.iter().any(|v| !v.is_finite() || *v < 0.0 || *v >= 100.0) {
++        return None;
++    }
++    values.iter().copied().reduce(f32::max)
++}
++
++#[cfg(test)]
++mod quota_tests {
++    use super::usable_quota;
++    #[test]
++    fn exhausted_weekly_quota_is_not_hidden_by_free_short_window() {
++        assert_eq!(usable_quota(&[0.0, 100.0]), None);
++        assert_eq!(usable_quota(&[23.0, 92.0]), Some(92.0));
++        assert!(usable_quota(&[8.0, 3.0]) < usable_quota(&[23.0, 92.0]));
++    }
++    #[test]
++    fn unknown_or_invalid_quotas_do_not_look_free() {
++        for values in [vec![], vec![f32::NAN], vec![-1.0], vec![10.0, f32::INFINITY]] {
++            assert_eq!(usable_quota(&values), None);
++        }
++    }
++}
+diff --git a/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs b/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
+index 816e246..3c7f64a 100644
+--- a/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
++++ b/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
+@@ -57,8 +57,11 @@ fn method_pill_selects_existing_provider_inline(cx: &mut gpui::TestAppContext) {
+     vcx.run_until_parked();
+     assert!(matches!(
+         commands.recv_timeout(std::time::Duration::from_millis(100)),
+-        Ok(Command::SetModel { session_id, model })
+-            if session_id == "session-a" && model == "claude-oauth:claude-fable-5"
++        Ok(Command::RuntimeCommand { session_id, command: jcode_sdk::api::RuntimeCommand::Auth, args })
++            if session_id == "session-a" && args.first().map(String::as_str) == Some("select-account")
++                && args.get(1).map(String::as_str) == Some("claude")
++                && args.get(2).is_some_and(|label| !label.is_empty())
++                && args.get(3).map(String::as_str) == Some("claude-oauth:claude-fable-5")
+     ));
+     assert!(vcx.debug_bounds("composer-provider-picker").is_none());
+     assert!(vcx.debug_bounds("login-busy").is_none());
