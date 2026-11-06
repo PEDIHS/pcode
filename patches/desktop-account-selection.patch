@@ -1,3 +1,36 @@
+diff --git a/crates/jcode-desktop-harness/src/platform.rs b/crates/jcode-desktop-harness/src/platform.rs
+index 0b82c3b..8865384 100644
+--- a/crates/jcode-desktop-harness/src/platform.rs
++++ b/crates/jcode-desktop-harness/src/platform.rs
+@@ -97,7 +97,8 @@ mod tests {
+     #[test]
+     fn missing_companion_falls_back_to_the_program_name() {
+         let name = "jcode-companion-that-does-not-exist";
+-        assert_eq!(companion_executable(name), PathBuf::from(name));
++        let expected = if cfg!(windows) { format!("{name}.exe") } else { name.to_owned() };
++        assert_eq!(companion_executable(name), PathBuf::from(expected));
+     }
+ 
+     #[cfg(unix)]
+diff --git a/crates/jcode-desktop-ui/src/panel.rs b/crates/jcode-desktop-ui/src/panel.rs
+index db710b5..39e096c 100644
+--- a/crates/jcode-desktop-ui/src/panel.rs
++++ b/crates/jcode-desktop-ui/src/panel.rs
+@@ -2808,6 +2808,14 @@ impl Panel {
+                     message: message.clone(),
+                 };
+                 self.items.push(Item::Assistant(output.message.clone()));
++                if *command == jcode_sdk::api::RuntimeCommand::Auth
++                    && data["selected"].as_bool() == Some(true)
++                {
++                    crate::accounts::request_refresh();
++                    self.bridge.send(Command::RefreshRuntime {
++                        session_id: self.session_id.clone(),
++                    });
++                }
+                 self.apply_special_command_artifacts(&output, cx);
+                 self.stick_to_bottom = true;
+             }
 diff --git a/crates/jcode-desktop-ui/src/panel_login_accounts.rs b/crates/jcode-desktop-ui/src/panel_login_accounts.rs
 index f36d62a..a3e26df 100644
 --- a/crates/jcode-desktop-ui/src/panel_login_accounts.rs
