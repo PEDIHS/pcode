@@ -52,7 +52,7 @@ index db710b5..39e096c 100644
                  self.stick_to_bottom = true;
              }
 diff --git a/crates/jcode-desktop-ui/src/panel_login_accounts.rs b/crates/jcode-desktop-ui/src/panel_login_accounts.rs
-index f36d62a..a3e26df 100644
+index f36d62a..248c653 100644
 --- a/crates/jcode-desktop-ui/src/panel_login_accounts.rs
 +++ b/crates/jcode-desktop-ui/src/panel_login_accounts.rs
 @@ -647,7 +647,9 @@ impl Panel {
@@ -75,6 +75,26 @@ index f36d62a..a3e26df 100644
          }
          pill.into_any_element()
      }
+@@ -1052,7 +1052,18 @@ impl Panel {
+         }
+         let label = row.label.clone();
+         if selecting {
+-            element = element.child(chip("Select provider", theme.ACCENT));
++            let selected_label = label.clone();
++            let select_id = format!("login-select-{key}");
++            let selector = select_id.clone();
++            element = element.child(chip("Use account", theme.ACCENT)
++                .id(SharedString::from(select_id))
++                .debug_selector(move || selector.clone())
++                .cursor_pointer()
++                .on_mouse_down(gpui::MouseButton::Left, |_, _, cx| cx.stop_propagation())
++                .on_click(cx.listener(move |this, _, window, cx| {
++                    cx.stop_propagation();
++                    this.select_existing_provider(provider, selected_label.clone(), window, cx);
++                })));
+         }
+         element = element.on_click(cx.listener(move |this, _, window, cx| {
+             if selecting {
 diff --git a/crates/jcode-desktop-ui/src/panel_provider_picker.rs b/crates/jcode-desktop-ui/src/panel_provider_picker.rs
 index f036a2b..1b5b6fd 100644
 --- a/crates/jcode-desktop-ui/src/panel_provider_picker.rs
@@ -193,10 +213,10 @@ index f036a2b..1b5b6fd 100644
 +    }
 +}
 diff --git a/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs b/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
-index 816e246..5da5c7f 100644
+index 816e246..caa02d2 100644
 --- a/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
 +++ b/crates/jcode-desktop-ui/src/panel_provider_picker_tests.rs
-@@ -50,6 +50,16 @@ fn method_pill_selects_existing_provider_inline(cx: &mut gpui::TestAppContext) {
+@@ -50,15 +50,28 @@ fn method_pill_selects_existing_provider_inline(cx: &mut gpui::TestAppContext) {
          vcx.debug_bounds("login-close").is_none(),
          "no Accounts sign-in UI"
      );
@@ -211,9 +231,10 @@ index 816e246..5da5c7f 100644
 +    });
 +    vcx.run_until_parked();
      let row = vcx
-         .debug_bounds("login-provider-claude")
+-        .debug_bounds("login-provider-claude")
++        .debug_bounds("login-select-claude:claude-selected")
          .expect("connected provider row is shown");
-@@ -57,8 +67,11 @@ fn method_pill_selects_existing_provider_inline(cx: &mut gpui::TestAppContext) {
+     vcx.simulate_click(row.center(), gpui::Modifiers::default());
      vcx.run_until_parked();
      assert!(matches!(
          commands.recv_timeout(std::time::Duration::from_millis(100)),
